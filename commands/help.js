@@ -2,6 +2,7 @@ exports.runQuery = function (matrixClient, room) {
   matrixClient.sendHtmlNotice(room.roomId,
     '',
     '<blockquote><b>+plemara [your message] : post<br>'
+          + '+redact [post id] : delete post<br>'
           + '+fren [user id] : follow<br>'
           + '+unfren [user id] : unfollow<br>'
           + '+copy [post id] : repeat/repost/retweet<br>'
