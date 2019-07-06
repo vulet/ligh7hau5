@@ -61,7 +61,7 @@ let CreateClient = (token) => {
       }
 
       if (command === 'fren') {
-        registrar.fren.runQuery(matrixClient, room, registrar);
+        registrar.fren.runQuery(matrixClient, room, userInput, registrar);
       }
 
       if (command === 'help') {
