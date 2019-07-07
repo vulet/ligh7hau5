@@ -11,7 +11,7 @@ exports.runQuery = function (matrixClient, room, userInput, registrar) {
         matrixClient.sendHtmlNotice(room.roomId,
           '',
           `Subscribed:
-          <blockquote>${registrar.config.fediverse}}/${response.data.id}`);
+          <blockquote>${registrar.config.fediverse}/${response.data.id}`);
       });
   }).catch((e) => {
     matrixClient.sendHtmlNotice(room.roomId,
