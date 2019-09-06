@@ -68,6 +68,10 @@ let CreateClient = (token) => {
         registrar.help.runQuery(matrixClient, room);
       }
 
+      if (command === 'pin') {
+        registrar.pin.runQuery(matrixClient, room, userInput, registrar);
+      }
+
       if (command === 'plemara') {
         registrar.plemara.runQuery(matrixClient, room, userInput, registrar);
       }
@@ -86,6 +90,10 @@ let CreateClient = (token) => {
 
       if (command === 'unfren') {
         registrar.unfren.runQuery(matrixClient, room, userInput, registrar);
+      }
+
+      if (command === 'unpin') {
+        registrar.unpin.runQuery(matrixClient, room, userInput, registrar);
       }
     }
   });
