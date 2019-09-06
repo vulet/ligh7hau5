@@ -9,7 +9,9 @@ exports.runQuery = function (matrixClient, room, userInput, registrar) {
     matrixClient.sendHtmlNotice(room.roomId,
           '',
           `Pinned:
-          <blockquote>${registrar.config.fediverse}/notice/${userInput}`);
+          <blockquote><i><a href="${registrar.config.fediverse}/notice/${response.data.id}">
+          ${response.data.content}</a></i>
+          </blockquote>`);
   })
     .catch((e) => {
       matrixClient.sendHtmlNotice(room.roomId,
