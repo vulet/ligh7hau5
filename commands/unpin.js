@@ -9,7 +9,7 @@ exports.runQuery = function (matrixClient, room, userInput, registrar) {
     matrixClient.sendHtmlNotice(room.roomId,
           '',
           `Unpinned:
-          <blockquote>${registrar.config.fediverse}/${userInput}`);
+          <blockquote>${registrar.config.fediverse}/notice/${userInput}`);
   })
     .catch((e) => {
       matrixClient.sendHtmlNotice(room.roomId,
