@@ -6,9 +6,11 @@ module.exports = {
   flood: require('./commands/flood.js'),
   fren: require('./commands/fren.js'),
   help: require('./commands/help.js'),  
+  pin: require('./commands/pin.js'),  
   plemara: require('./commands/plemara.js'),
   redact: require('./commands/redact.js'),
   notify: require('./commands/notify.js'),
   reply: require('./commands/reply.js'),
   unfren: require('./commands/unfren.js'),
+  unpin: require('./commands/unpin.js'),
 };
