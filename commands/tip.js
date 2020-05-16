@@ -5,11 +5,14 @@ exports.runQuery = function (matrixClient, room, address, flaggedInput, registra
     method: 'POST',
     url: `${registrar.config.fediverse}/api/v1/statuses`,
     headers: { Authorization: `Bearer ${registrar.config.fediverseToken}` },
-    data: { status: flaggedInput, in_reply_to_id: address, content_type: `text/markdown` },
+    data: { status: `@10grans@fedi.cc tip `+ flaggedInput + ` to `+address },
   }).then((response) => {
     matrixClient.sendHtmlNotice(room.roomId,
       '',
-      `${response.data.content} ${response.data.url}`);
+      `<b>
+      <blockquote><i>Tipping ${response.data.content}<br>
+      (id: ${response.data.id}</a>)
+      </blockquote><br>`);
   })
     .catch((e) => {
       matrixClient.sendHtmlNotice(room.roomId,

@@ -5,7 +5,7 @@ exports.runQuery = function (matrixClient, room, userInput, registrar) {
     method: 'POST',
     url: `${registrar.config.fediverse}/api/v1/statuses`,
     headers: { Authorization: `Bearer ${registrar.config.fediverseToken}` },
-    data: { status: userInput },
+    data: { status: userInput, content_type: `text/markdown` },
   }).then((response) => {
     matrixClient.sendHtmlNotice(room.roomId,
       '',

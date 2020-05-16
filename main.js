@@ -2,14 +2,13 @@ const sdk = require('matrix-js-sdk');
 const axios = require('axios');
 const registrar = require('./registrar.js');
 
-const homeServer = 'https://civseed.com/_matrix/client/r0/login';
 const auth = {
   type: 'm.login.password',
   user: registrar.config.matrixUser,
   password: registrar.config.matrixPass,
 };
 
-axios.post(homeServer, auth).then((response) => {
+axios.post(`${registrar.config.matrixServer}/_matrix/client/r0/login`, auth).then((response) => {
   CreateClient(response.data.access_token);
 }).catch((e) => {
   console.log(e);
@@ -86,6 +85,10 @@ let CreateClient = (token) => {
 
       if (command === 'reply') {
         registrar.reply.runQuery(matrixClient, room, address, flaggedInput, registrar);
+      }
+
+      if (command === 'tip') {
+        registrar.tip.runQuery(matrixClient, room, address, flaggedInput, registrar);
       }
 
       if (command === 'unfren') {

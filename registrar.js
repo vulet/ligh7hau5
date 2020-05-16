@@ -11,6 +11,7 @@ module.exports = {
   redact: require('./commands/redact.js'),
   notify: require('./commands/notify.js'),
   reply: require('./commands/reply.js'),
+  tip: require('./commands/tip.js'),
   unfren: require('./commands/unfren.js'),
   unpin: require('./commands/unpin.js'),
 };

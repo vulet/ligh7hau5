@@ -16,8 +16,11 @@ exports.runQuery = function (matrixClient, room, registrar) {
             '',
             `<b><a href="${registrar.config.fediverse}/notice/${events.data[0].id}">${events.data[0].account.acct}</a>
               <blockquote><i>${events.data[0].content}<br>
+              ${events.data[0].media_attachments.map(media =>
+                `<a href="${media.remote_url}">`+`${media.description}`+'</a>'
+                ).join('<br>')}
               (id: ${events.data[0].id}</a>)
-              </blockquote><br>`);
+              </blockquote>`);
         } else {
           matrixClient.sendHtmlNotice(room.roomId,
             '',
@@ -26,8 +29,11 @@ exports.runQuery = function (matrixClient, room, registrar) {
             <font color="#7886D7">has <a href="${registrar.config.fediverse}/notice/${events.data[0].id}">repeated</a>:
             <blockquote><a href="${events.data[0].reblog.account.url}">${events.data[0].reblog.account.acct}</a></blockquote>
             <blockquote>${events.data[0].content}<br>
-            (id: ${events.data[0].id})
-            </blockquote><br>`);
+            ${events.data[0].media_attachments.map(media =>
+                `<a href="${media.remote_url}">`+`Proxied image, no description available.`+'</a>'
+                ).join('<br>')}
+            <br>(id: ${events.data[0].id})
+            </blockquote>`);
         }
       }
     });
