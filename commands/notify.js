@@ -15,35 +15,35 @@ exports.runQuery = function (matrixClient, room, registrar) {
         if (notifications.data[0].type === 'follow') {
           matrixClient.sendHtmlNotice(room.roomId,
             '',
-            `<hr><b><a href="${registrar.config.fediverse}/${notifications.data[0].account.id}">
+            `<b><a href="${registrar.config.fediverse}/${notifications.data[0].account.id}">
             ${notifications.data[0].account.acct}</a></b>
           <font color="#03b381"><b>has followed you.</b></font>
-          <br><i>${notifications.data[0].account.note}</i><hr>`);
+          <br><i>${notifications.data[0].account.note}</i>`);
         } else if (notifications.data[0].type === 'favourite') {
           matrixClient.sendHtmlNotice(room.roomId,
             '',
-            `<hr><b><a href="${registrar.config.fediverse}/${notifications.data[0].account.id}">
+            `<b><a href="${registrar.config.fediverse}/${notifications.data[0].account.id}">
             ${notifications.data[0].account.acct}</a></b>
           <font color="#03b381"><b>has <a href="${notifications.data[0].status.uri}">favorited</a>
           your post:</b></font>
-          <br><i><b>${notifications.data[0].status.content}</i></b><hr>`);
+          <br><blockquote><i><b>${notifications.data[0].status.content}</i></b></blockquote>`);
         } else if (notifications.data[0].type === 'mention') {
           matrixClient.sendHtmlNotice(room.roomId,
             '',
-            `<hr><b><a href="${registrar.config.fediverse}/${notifications.data[0].account.id}">
+            `<b><a href="${registrar.config.fediverse}/${notifications.data[0].account.id}">
             ${notifications.data[0].account.acct}</a></b>
           <font color="#03b381"><b>has <a href="${notifications.data[0].status.uri}">mentioned</a>
           you:</b></font><br>
-          <i><b>${notifications.data[0].status.content}</i></b>
-          <br>(id: ${notifications.data[0].status.id})</i></b><hr>`);
+          <i><blockquote><b>${notifications.data[0].status.content}</i></b>
+          <br><b>(id: ${notifications.data[0].status.id})</i></b></blockquote>`);
         } else if (notifications.data[0].type === 'reblog') {
           matrixClient.sendHtmlNotice(room.roomId,
             '',
-            `<hr><b><a href="${registrar.config.fediverse}/${notifications.data[0].account.id}">
+            `<b><a href="${registrar.config.fediverse}/${notifications.data[0].account.id}">
             ${notifications.data[0].account.acct}</a></b>
           <font color="#03b381"><b>has <a href="${notifications.data[0].status.uri}">repeated</a>
           your post:</b></font><br>
-          <i><b>${notifications.data[0].status.content}</i></b><hr>`);
+          <blockquote><i><b>${notifications.data[0].status.content}</i></b></blockquote>`);
         }
       }
     });
