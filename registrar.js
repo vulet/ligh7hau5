@@ -1,6 +1,7 @@
 module.exports = {
   config: require('./config.js'),
   boo: require('./commands/boo.js'),
+  beg: require('./commands/beg.js'),
   clap: require('./commands/clap.js'),
   copy: require('./commands/copy.js'),
   flood: require('./commands/flood.js'),

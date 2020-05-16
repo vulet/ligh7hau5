@@ -8,6 +8,7 @@ exports.runQuery = function (matrixClient, room) {
           + '+copy [post id] : repeat/repost/retweet<br>'
           + '+reply [post id] [content] : reply to post<br>'
           + '+tip [@user@fedi.url] [amount] : tip 10grans'
+          + '+beg : beg for 10grans'
           + '+clap [post id] : favorite<br>'
           + '+boo [post id] : unfavorite</blockquote>'
           + '<blockquote><b>channel commands<br>'

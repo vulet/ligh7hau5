@@ -47,6 +47,10 @@ let CreateClient = (token) => {
         registrar.boo.runQuery(matrixClient, room, userInput, registrar);
       }
 
+      if (command === 'beg') {
+        registrar.beg.runQuery(matrixClient, room, registrar);
+      }
+
       if (command === 'clap') {
         registrar.clap.runQuery(matrixClient, room, userInput, registrar);
       }
