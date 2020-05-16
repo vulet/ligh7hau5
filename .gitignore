@@ -5,6 +5,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Ignore config
+/config.js
+
+# Ignore JSON
+/timeline.json
+/notification.json
+
 # Runtime data
 pids
 *.pid
