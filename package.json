@@ -1,6 +1,6 @@
 {
-  "name": "spellbinder",
-  "version": "0.1.0",
+  "name": "plemara",
+  "version": "0.2.1",
   "description": "A Matrix to Fediverse client",
   "main": "main.js",
   "scripts": {
@@ -9,18 +9,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vulet/spellbinder.git"
+    "url": "git+https://github.com/vulet/plemara.git"
   },
   "author": "vul",
   "license": "AGPL-3.0-only",
   "bugs": {
-    "url": "https://github.com/vulet/spellbinder/issues"
+    "url": "https://github.com/vulet/plemara/issues"
   },
-  "homepage": "https://github.com/vulet/spellbinder#readme",
+  "homepage": "https://github.com/vulet/plemara#readme",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.19.2",
     "file-system": "^2.2.2",
-    "matrix-js-sdk": "^2.0.1-rc.1"
+    "matrix-js-sdk": "^2.4.6"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
