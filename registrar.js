@@ -15,4 +15,5 @@ module.exports = {
   tip: require('./commands/tip.js'),
   unfren: require('./commands/unfren.js'),
   unpin: require('./commands/unpin.js'),
+  mordy: require('./commands/mordy.js'),
 };

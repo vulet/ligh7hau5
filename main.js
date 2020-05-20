@@ -102,6 +102,10 @@ let CreateClient = (token) => {
       if (command === 'unpin') {
         registrar.unpin.runQuery(matrixClient, room, userInput, registrar);
       }
+
+      if (command === 'mordy') {
+        registrar.mordy.runQuery(matrixClient, room, userInput, registrar);
+      }
     }
   });
 
