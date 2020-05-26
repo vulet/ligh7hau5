@@ -4,7 +4,7 @@ const registrar = require('../registrar.js');
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-const editNoticeHTML = (client, roomId, eventId, html, plain) => client.sendMessage(roomId, {
+const editNoticeHTML = (client, roomId, event, html, plain) => client.sendMessage(roomId, {
   body: ` * ${plain || html.replace(/<[^<]+?>/g, '')}`,
   formatted_body: ` * ${html}`,
   format: 'org.matrix.custom.html',
@@ -17,7 +17,7 @@ const editNoticeHTML = (client, roomId, eventId, html, plain) => client.sendMess
   },
   'm.relates_to': {
     rel_type: 'm.replace',
-    event_id: eventId
+    event_id: event.event_id
   }
 });
 
