@@ -16,4 +16,5 @@ module.exports = {
   unfren: require('./commands/unfren.js'),
   unpin: require('./commands/unpin.js'),
   mordy: require('./commands/mordy.js'),
+  archive: require('./commands/archive.js'),
 };

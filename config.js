@@ -5,4 +5,8 @@ module.exports = {
   matrixPass: 'password',
   fediverse: 'https://server.com',
   fediverseToken: 'access_token',
+  archive: {
+    domain: 'archive.is',
+    userAgent: 'Mozilla/4.0 (compatible; Beep Boop)'
+  }
 };

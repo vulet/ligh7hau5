@@ -32,3 +32,6 @@ Result:
 The access_token from the above command is then stored in the [config.js](https://github.com/vulet/plemara/blob/master/config.js) file.
 # Images 
 ![Bridge](https://civseed.com/_matrix/media/v1/download/civseed.com/wwLEtYGUUfYanovmSSAxdTJI)
+
+# Contributors
+CryptoMooners

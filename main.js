@@ -106,6 +106,10 @@ let CreateClient = (token) => {
       if (command === 'mordy') {
         registrar.mordy.runQuery(matrixClient, room, userInput, registrar);
       }
+
+      if (command === 'archive') {
+        registrar.archive.runQuery(matrixClient, room, userInput, registrar);
+      }
     }
   });
 
