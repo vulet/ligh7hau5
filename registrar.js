@@ -17,4 +17,5 @@ module.exports = {
   unpin: require('./commands/unpin.js'),
   mordy: require('./commands/mordy.js'),
   archive: require('./commands/archive.js'),
+  nitter: require('./commands/nitter.js'),
 };

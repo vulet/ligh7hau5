@@ -8,5 +8,10 @@ module.exports = {
   archive: {
     domain: 'archive.is',
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)'
+  },
+  nitter: {
+    domain: 'nitter.net',
+    userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
+    domains: [ 'nitter.net', 'twitter.com' ]
   }
 };

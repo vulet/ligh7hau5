@@ -20,7 +20,8 @@
   "dependencies": {
     "axios": "^0.19.2",
     "file-system": "^2.2.2",
-    "matrix-js-sdk": "^2.4.6"
+    "matrix-js-sdk": "^2.4.6",
+    "jsdom": "^16.2.2"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

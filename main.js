@@ -114,6 +114,10 @@ let CreateClient = (token) => {
       if (command === 'rearchive') {
         registrar.archive.runQuery(matrixClient, room, userInput, true, registrar);
       }
+
+      if (command === 'nitter') {
+        registrar.nitter.runQuery(matrixClient, room, userInput, registrar);
+      }
     }
   });
 
