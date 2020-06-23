@@ -108,7 +108,11 @@ let CreateClient = (token) => {
       }
 
       if (command === 'archive') {
-        registrar.archive.runQuery(matrixClient, room, userInput, registrar);
+        registrar.archive.runQuery(matrixClient, room, userInput, false, registrar);
+      }
+
+      if (command === 'rearchive') {
+        registrar.archive.runQuery(matrixClient, room, userInput, true, registrar);
       }
     }
   });

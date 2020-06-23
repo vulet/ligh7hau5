@@ -26,7 +26,7 @@ const headers = ({ domain, userAgent }) => ({
   'User-Agent': `${userAgent}`
 });
 
-const archive = async (instance, url) => {
+const archive = async (instance, url, rearchive) => {
   const form = await instance({ method: 'GET', url: '/' });
   if (form.statusText !== 'OK') throw form;
   const submitId = form.data.match(/name="submitid" value="([^"]+)/);
@@ -34,11 +34,11 @@ const archive = async (instance, url) => {
     method: 'POST',
     url: '/submit/',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    data: qs.stringify({ submitid: submitId ? submitId[1] : undefined, url })
+    data: qs.stringify({ anyway: rearchive ? '1' : undefined, submitid: submitId ? submitId[1] : undefined, url })
   });
   if (submit.statusText !== 'OK') throw submit;
   if (submit.request.path !== '/submit/')
-    return { id: submit.request.path };
+    return { id: submit.request.path, date: submit.headers['memento-datetime'] };
   if (submit.headers.refresh)
     return { refresh: submit.headers.refresh.split(';url=')[1] };
   throw submit;
@@ -46,10 +46,10 @@ const archive = async (instance, url) => {
 
 const reqStr = str => `<em>Sending archive request for <code>${str}</code></em>`;
 const arc1Str = str => `<em>Archiving page <code>${str}</code></em>`;
-const arc2Str = str => `<em>Archived page <code>${str}</code></em>`;
+const arc2Str = (str, date) => `<em>Archived page <code>${str}</code> [${date}]</em>`;
 const arc3Str = str => `<em>Timed out <code>${str}</code></em>`;
 
-const run = async (matrixClient, { roomId }, userInput, registrar) => {
+const run = async (matrixClient, { roomId }, userInput, rearchive, registrar) => {
   const config = registrar.config.archive;
   const instance = axios.create({
     baseURL: `https://${config.domain}`,
@@ -60,9 +60,9 @@ const run = async (matrixClient, { roomId }, userInput, registrar) => {
   let reply = null;
   try {
     reply = await matrixClient.sendHtmlNotice(roomId, '', reqStr(userInput));
-    const { refresh, id } = await archive(instance, userInput);
+    const { refresh, id, date } = await archive(instance, userInput, rearchive);
     if (id)
-      return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}${id}`));
+      return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}${id}`, date));
     if (refresh) {
       const path = refresh.split(`https://${config.domain}`);
       if (!path[1]) throw refresh;
@@ -70,10 +70,10 @@ const run = async (matrixClient, { roomId }, userInput, registrar) => {
       let tries = 30;
       while (tries--) {
         await sleep(10000);
-        const { request: { path: reqPath } } = await instance({ method: 'HEAD', url: path[1] })
+        const { request: { path: reqPath }, headers: { 'memento-datetime': date } } = await instance({ method: 'HEAD', url: path[1] })
           .catch(e => ({ request: { path: path[1] } }));
         if (reqPath !== path[1])
-          return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}${reqPath}`));
+          return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}${reqPath}`, date));
       }
       return await editNoticeHTML(matrixClient, roomId, reply, arc3Str(refresh));
     }
