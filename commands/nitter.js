@@ -50,14 +50,13 @@ const run = async (matrixClient, { roomId }, userInput, registrar) => {
   return await matrixClient.sendHtmlNotice(roomId, '', card(tweet, `https://${config.domain}`, userInput));
 }
  
-exports.runQuery = (client, room, userInput, registrar) => {
-  let url = null;
+exports.runQuery = async (client, room, userInput, registrar) => {
   try {
-    url = new URL(userInput);
+    const url = new URL(userInput);
     if(!registrar.config.nitter.domains.includes(url.hostname)) throw '';
     if(!/^\/[^/]+\/status\/\d+\/?$/.test(url.pathname)) throw '';
+    return await run(client, room, url.pathname, registrar);
   } catch(e) {
-    return client.sendHtmlNotice(roomId, 'Sad!', `<strong>Sad!</strong>`).catch(()=>{});
+    return client.sendHtmlNotice(room.roomId, 'Sad!', `<strong>Sad!</strong>`).catch(()=>{});
   }
-  return run(client, room, url.pathname, registrar);
 };
