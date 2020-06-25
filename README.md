@@ -1,6 +1,7 @@
 # Plemara   
 Plemara acts as a [Matrix](https://matrix.org/docs/spec/) bridge to the Fediverse. This application should allow you to do most actions on the Fediverse including livefeed, posting, subscribing, etc. via Matrix. Configuration for the app can be found in [config.js](https://github.com/vulet/plemara/blob/master/config.js). You will need to provide a Matrix username and password for the bridge to work, this can be done through an account made on @matrix.org, or your own homeserver. For the Fediverse side, you will need an access_token, this can be created through the CURL steps below. You would replace `fediverse.site` with where you would like to run the bridge from.
 
+
 # Installation
 1. `git clone https://github.com/vulet/plemara`
 2. `cd plemara && yarn install`
@@ -30,8 +31,13 @@ Result:
 ```
 
 The access_token from the above command is then stored in the [config.js](https://github.com/vulet/plemara/blob/master/config.js) file.
-# Images 
-![Bridge](https://civseed.com/_matrix/media/v1/download/civseed.com/wwLEtYGUUfYanovmSSAxdTJI)
+
+
+# Extra Features
+- Nitter.net / Twitter
+- Invidio.us / YouTube
+- Archive.is
+
 
 # Contributors
 CryptoMooners
