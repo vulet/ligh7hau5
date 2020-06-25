@@ -13,5 +13,10 @@ module.exports = {
     domain: 'nitter.net',
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
     domains: [ 'nitter.net', 'twitter.com' ]
+  },
+  invidious: {
+    domain: 'invidio.us',
+    userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
+    domains: [ 'invidio.us', 'youtube.com' ]
   }
 };

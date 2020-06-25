@@ -18,4 +18,5 @@ module.exports = {
   mordy: require('./commands/mordy.js'),
   archive: require('./commands/archive.js'),
   nitter: require('./commands/nitter.js'),
+  invidious: require('./commands/invidious.js'),
 };

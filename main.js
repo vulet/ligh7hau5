@@ -118,6 +118,10 @@ let CreateClient = (token) => {
       if (command === 'nitter') {
         registrar.nitter.runQuery(matrixClient, room, userInput, registrar);
       }
+
+      if (command === 'invidious') {
+        registrar.invidious.runQuery(matrixClient, room, userInput, registrar);
+      }
     }
   });
 
