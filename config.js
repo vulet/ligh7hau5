@@ -12,11 +12,11 @@ module.exports = {
   nitter: {
     domain: 'nitter.net',
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
-    domains: [ 'nitter.net', 'twitter.com' ]
+    domains: [ 'nitter.net', 'www.nitter.net', 'twitter.com', 'www.twitter.com' ]
   },
   invidious: {
     domain: 'invidio.us',
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
-    domains: [ 'invidio.us', 'youtube.com' ]
+    domains: [ 'invidio.us', 'www.invidio.us', 'youtube.com', 'www.youtube.com']
   }
 };
