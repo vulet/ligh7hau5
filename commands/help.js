@@ -12,7 +12,13 @@ exports.runQuery = function (matrixClient, room) {
           + '+clap [post id] : favorite<br>'
           + '+boo [post id] : unfavorite</blockquote>'
           + '<blockquote><b>channel commands<br>'
-          + '+flood : turn on timeline<br>'
-          + '+notify : show notifications</b></blockquote>'
+          + '+flood : turn on timeline in channel<br>'
+          + '+notify : show notifications in channel</b>'
+          + '+archive [URL] : archive content<br>'
+          + '+rearchive [URL] : re-archive content<br>'
+          + '+nitter [status URL] : redirect twitter to nitter, also embed tweet<br>'
+          + '+invidious [video URL] : redirect youtube to invidious, also embed description<br></blockquote>'
+          + '<blockquote><b>--- <i>contributors🐱</i> ---</b>'
+          + '--- <i>cryptomooners</i> ---</blockquote>'
           + '<blockquote><b>--- <i>docs by lint</i> ---</b></blockquote>');
 };
