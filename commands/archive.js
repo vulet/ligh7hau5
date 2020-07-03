@@ -1,5 +1,6 @@
 const qs = require('qs');
 const axios = require('axios');
+const { JSDOM } = require('jsdom');
 const registrar = require('../registrar.js');
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -36,9 +37,10 @@ const archive = async (instance, url, rearchive) => {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     data: qs.stringify({ anyway: rearchive ? '1' : undefined, submitid: submitId ? submitId[1] : undefined, url })
   });
+  submit.title = new JSDOM(submit.data).window.document.title;
   if (submit.statusText !== 'OK') throw submit;
   if (submit.request.path !== '/submit/')
-    return { id: submit.request.path, date: submit.headers['memento-datetime'] };
+    return { id: submit.request.path, date: submit.headers['memento-datetime'], title: submit.title };
   if (submit.headers.refresh)
     return { refresh: submit.headers.refresh.split(';url=')[1] };
   throw submit;
@@ -46,7 +48,7 @@ const archive = async (instance, url, rearchive) => {
 
 const reqStr = str => `<em>Sending archive request for <code>${str}</code></em>`;
 const arc1Str = str => `<em>Archiving page <code>${str}</code></em>`;
-const arc2Str = (str, date) => `<em>Archived page <code>${str}</code> [${date}]</em>`;
+const arc2Str = (str, title, date) => `<em>Archived page <code><a href="https://${str}">${str}</code> [${date}]</em><br /><b>${title}</b>`;
 const arc3Str = str => `<em>Timed out <code>${str}</code></em>`;
 
 const run = async (matrixClient, { roomId }, userInput, rearchive, registrar) => {
@@ -57,12 +59,13 @@ const run = async (matrixClient, { roomId }, userInput, rearchive, registrar) =>
     transformResponse: [],
     timeout: 10 * 1000
   });
+
   let reply = null;
   try {
     reply = await matrixClient.sendHtmlNotice(roomId, '', reqStr(userInput));
-    const { refresh, id, date } = await archive(instance, userInput, rearchive);
+    const { refresh, id, title, date } = await archive(instance, userInput, rearchive);
     if (id)
-      return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}${id}`, date));
+      return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}${id}`, title, date));
     if (refresh) {
       const path = refresh.split(`https://${config.domain}`);
       if (!path[1]) throw refresh;
@@ -70,10 +73,13 @@ const run = async (matrixClient, { roomId }, userInput, rearchive, registrar) =>
       let tries = 30;
       while (tries--) {
         await sleep(10000);
-        const { request: { path: reqPath }, headers: { 'memento-datetime': date } } = await instance({ method: 'HEAD', url: path[1] })
-          .catch(e => ({ request: { path: path[1] } }));
-        if (reqPath !== path[1])
-          return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}${reqPath}`, date));
+        const { title, date } = await archive(instance, userInput);
+        if (rearchive == false && title !== undefined)
+          return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}`, title, date));
+        const { request: { path: reqPath }, headers: { 'memento-datetime': rearchiveDate } } = await instance({ method: 'HEAD', url: path[1] })
+            .catch(e => ({ request: { path: path[1] } }));
+        if (rearchive == true && reqPath !== path[1])
+          return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}${reqPath}`, title, rearchiveDate));
       }
       return await editNoticeHTML(matrixClient, roomId, reply, arc3Str(refresh));
     }
@@ -85,6 +91,7 @@ const run = async (matrixClient, { roomId }, userInput, rearchive, registrar) =>
     else
       matrixClient.sendHtmlNotice(roomId, 'sad', sad).catch(() => {});
   }
-}
+};
 
 exports.runQuery = run;
+
