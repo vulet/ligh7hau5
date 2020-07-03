@@ -21,7 +21,8 @@
     "axios": "^0.19.2",
     "file-system": "^2.2.2",
     "matrix-js-sdk": "^2.4.6",
-    "jsdom": "^16.2.2"
+    "jsdom": "^16.2.2",
+    "form-data": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

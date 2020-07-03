@@ -127,6 +127,10 @@ let CreateClient = (token, user_id) => {
       if (command === 'invidious') {
         registrar.invidious.runQuery(matrixClient, room, userInput, registrar);
       }
+
+      if (command === 'media') {
+        registrar.media.runQuery(matrixClient, room, userInput, registrar);
+      }
     }
   });
 

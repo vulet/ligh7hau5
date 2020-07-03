@@ -3,6 +3,8 @@ module.exports = {
     domain: 'https://your_homeserver.com',
     user: 'your_user',
     password: 'your_password',
+    domains: [ 'your_homeserver.com' ],
+    mimetypes: [ 'image/png', 'image/jpeg' ]
   },
   fediverse: {
     domain: 'https://your_federation.com',

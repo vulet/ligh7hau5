@@ -19,4 +19,5 @@ module.exports = {
   archive: require('./commands/archive.js'),
   nitter: require('./commands/nitter.js'),
   invidious: require('./commands/invidious.js'),
+  media: require('./commands/media.js')
 };
