@@ -133,7 +133,7 @@ let CreateClient = (token, user_id) => {
       }
 
       if (command === 'status') {
-        registar.status.runQuery(matrixClient, room, userInput, registrar);
+        registrar.status.runQuery(matrixClient, room, userInput, registrar);
       }
 
     }
