@@ -75,7 +75,7 @@ const run = async (matrixClient, { roomId }, userInput, rearchive, registrar) =>
         await sleep(10000);
         const { title, date } = await archive(instance, userInput);
         if (rearchive == false && title !== undefined)
-          return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}`, title, date));
+          return await editNoticeHTML(matrixClient, roomId, reply, arc2Str(`${config.domain}${id}`, title, date));
         const { request: { path: reqPath }, headers: { 'memento-datetime': rearchiveDate } } = await instance({ method: 'HEAD', url: path[1] })
             .catch(e => ({ request: { path: path[1] } }));
         if (rearchive == true && reqPath !== path[1])
