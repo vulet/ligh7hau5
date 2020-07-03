@@ -131,6 +131,11 @@ let CreateClient = (token, user_id) => {
       if (command === 'media') {
         registrar.media.runQuery(matrixClient, room, userInput, registrar);
       }
+
+      if (command === 'status') {
+        registar.status.runQuery(matrixClient, room, userInput, registrar);
+      }
+
     }
   });
 

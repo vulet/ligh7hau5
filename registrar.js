@@ -6,8 +6,8 @@ module.exports = {
   copy: require('./commands/copy.js'),
   flood: require('./commands/flood.js'),
   fren: require('./commands/fren.js'),
-  help: require('./commands/help.js'),  
-  pin: require('./commands/pin.js'),  
+  help: require('./commands/help.js'),
+  pin: require('./commands/pin.js'),
   plemara: require('./commands/plemara.js'),
   redact: require('./commands/redact.js'),
   notify: require('./commands/notify.js'),
@@ -19,5 +19,6 @@ module.exports = {
   archive: require('./commands/archive.js'),
   nitter: require('./commands/nitter.js'),
   invidious: require('./commands/invidious.js'),
-  media: require('./commands/media.js')
+  media: require('./commands/media.js'),
+  status: require('./commands/status.js')
 };
