@@ -26,7 +26,7 @@ const nitter = async (instance, url) => {
       path: quote.querySelector('a.quote-link').href,
       text: quote.querySelector('.quote-text').innerHTML,
     } : null,
-    isReply: isReply && replies.length > 0 ? {
+    isReply: isReply && replies.length > 0 ? replies[replies.length - 1].classList.contains('unavailable') ? 'unavailable' : {
       path: replies[replies.length - 1].querySelector('a.tweet-link').href,
       text: replies[replies.length - 1].querySelector('.tweet-content').innerHTML,
     } : null,
@@ -46,7 +46,7 @@ const card = (tweet, base, path) =>
 `<span>❤️ ${tweet.stats.favorites}</span> ` +
 `<br /><blockquote><b><i>${tweet.text.replace('\n', '<br />')}</i></b></blockquote>` +
 (tweet.hasAttachments ? '<blockquote><b>This tweet has attached media.</b></blockquote>' : '') +
-(tweet.isReply ? `<blockquote><b><a href="${base}${tweet.isReply.path}">Replied Tweet</a></b><br /><b><i>${tweet.isReply.text.replace('\n', '<br />')}</i></b></blockquote>` : '') +
+(tweet.isReply ? tweet.isReply === 'unavailable' ? '<blockquote>Replied Tweet is unavailable</blockquote>' : `<blockquote><b><a href="${base}${tweet.isReply.path}">Replied Tweet</a></b><br /><b><i>${tweet.isReply.text.replace('\n', '<br />')}</i></b></blockquote>` : '') +
 (tweet.quote ? `<blockquote><b><a href="${base}${tweet.quote.path}">Quoted Tweet</a></b><br /><b><i>${tweet.quote.text.replace('\n', '<br />')}</i></b></blockquote>` : '');
 const run = async (matrixClient, { roomId }, userInput, registrar) => {
   const config = registrar.config.nitter;
