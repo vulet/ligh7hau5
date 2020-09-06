@@ -129,7 +129,11 @@ let CreateClient = (token, user_id) => {
       }
 
       if (command === 'media') {
-        registrar.media.runQuery(matrixClient, room, userInput, registrar);
+        registrar.media.runQuery(matrixClient, room, userInput, false, registrar);
+      }
+
+      if (command === 'mediareply') {
+        registrar.media.runQuery(matrixClient, room, userInput, true, registrar);
       }
 
       if (command === 'status') {
