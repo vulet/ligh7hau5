@@ -76,7 +76,7 @@ let CreateClient = (token, user_id) => {
           args.push(matrixClient, room, userInput, registrar);
       }
 
-      registrar[command] && registrar[command].runQuery.call(null, args);
+      registrar[command] && registrar[command].runQuery.apply(null, args);
     }
   });
 
