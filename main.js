@@ -42,104 +42,41 @@ let CreateClient = (token, user_id) => {
     if (event.event.unsigned.age > 10000) return;
     if (event.event.content.body.charAt(0) === '+') {
       console.log(`Logs: ${event.event.sender} -  ${event.event.content.body}`);
-      const args = event.event.content.body.slice(1).trim().split(/ +/g);
-      const command = args.shift().toLowerCase();
+      let args = event.event.content.body.slice(1).trim().split(/ +/g);
+      let command = args.shift().toLowerCase();
       const userInput = args.join(' ');
       const flaggedInput = userInput.substr(userInput.indexOf(' ') + 1);
       const address = args.slice(0, 1).join(' ').replace(/"/g, '');
 
-      if (command === 'boo') {
-        registrar.boo.runQuery(matrixClient, room, userInput, registrar);
+      args = [];
+
+      switch(command) {
+        case 'config':
+          return;
+        case 'help': case 'beg': case 'flood': case 'notify':
+          args.push(matrixClient, room, registrar);
+          break;
+        case 'tip':
+          args.push(matrixClient, room, address, flaggedInput, registrar);
+          break;
+        case 'archive': case 'rearchive':
+          args.push(matrixClient, room, userInput, !!~command.indexOf('re'), registrar);
+          command = 'archive';
+          break;
+        case 'plemara': case 'reply': case 'media': case 'mediareply':
+        case 'random': case 'randomreply': case 'randommedia': case 'randommediareply':
+          args.push(matrixClient, room, userInput, registrar, {
+            isReply: !!~command.indexOf('reply'),
+            hasMedia: !!~command.indexOf('media'),
+            hasSubject: !!~command.indexOf('random'),
+          });
+          command = 'media';
+          break;
+        default:
+          args.push(matrixClient, room, userInput, registrar);
       }
 
-      if (command === 'beg') {
-        registrar.beg.runQuery(matrixClient, room, registrar);
-      }
-
-      if (command === 'clap') {
-        registrar.clap.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'copy') {
-        registrar.copy.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'flood') {
-        registrar.flood.runQuery(matrixClient, room, registrar);
-      }
-
-      if (command === 'fren') {
-        registrar.fren.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'help') {
-        registrar.help.runQuery(matrixClient, room);
-      }
-
-      if (command === 'pin') {
-        registrar.pin.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'plemara') {
-        registrar.plemara.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'notify') {
-        registrar.notify.runQuery(matrixClient, room, registrar);
-      }
-
-      if (command === 'redact') {
-        registrar.redact.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'reply') {
-        registrar.reply.runQuery(matrixClient, room, address, flaggedInput, registrar);
-      }
-
-      if (command === 'tip') {
-        registrar.tip.runQuery(matrixClient, room, address, flaggedInput, registrar);
-      }
-
-      if (command === 'unfren') {
-        registrar.unfren.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'unpin') {
-        registrar.unpin.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'mordy') {
-        registrar.mordy.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'archive') {
-        registrar.archive.runQuery(matrixClient, room, userInput, false, registrar);
-      }
-
-      if (command === 'rearchive') {
-        registrar.archive.runQuery(matrixClient, room, userInput, true, registrar);
-      }
-
-      if (command === 'nitter') {
-        registrar.nitter.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'invidious') {
-        registrar.invidious.runQuery(matrixClient, room, userInput, registrar);
-      }
-
-      if (command === 'media') {
-        registrar.media.runQuery(matrixClient, room, userInput, false, registrar);
-      }
-
-      if (command === 'mediareply') {
-        registrar.media.runQuery(matrixClient, room, userInput, true, registrar);
-      }
-
-      if (command === 'status') {
-        registrar.status.runQuery(matrixClient, room, userInput, registrar);
-      }
-
+      registrar[command] && registrar[command].runQuery.call(null, args);
     }
   });
 

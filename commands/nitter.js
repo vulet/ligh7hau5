@@ -24,7 +24,7 @@ const nitter = async (instance, url) => {
     hasAttachments: !!tweet.querySelector('.tweet-body > .attachments'),
     quote: quote ? {
       path: quote.querySelector('a.quote-link').href,
-      text: quote.querySelector('.quote-text').innerHTML,
+      text: quote.querySelector('.quote-text') ? quote.querySelector('.quote-text').innerHTML : '',
     } : null,
     isReply: isReply && replies.length > 0 ? replies[replies.length - 1].classList.contains('unavailable') ? 'unavailable' : {
       path: replies[replies.length - 1].querySelector('a.tweet-link').href,
