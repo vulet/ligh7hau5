@@ -20,6 +20,7 @@ const nitter = async (instance, url) => {
     text: tweet.querySelector('.tweet-body > .tweet-content').innerHTML,
     date: tweet.querySelector('.tweet-body > .tweet-published').textContent,
     name: tweet.querySelector('.tweet-body > div .fullname').textContent,
+    check: !!tweet.querySelector('.tweet-body > div .fullname .icon-ok'),
     handle: tweet.querySelector('.tweet-body > div .username').textContent,
     hasAttachments: !!tweet.querySelector('.tweet-body > .attachments'),
     quote: quote ? {
@@ -38,8 +39,9 @@ const nitter = async (instance, url) => {
   };
 };
 
-const card = (tweet, base, path) =>
+const card = (tweet, base, check, path) =>
 `<a href="${base}/${tweet.handle.replace(/^@/, '')}"><b>${tweet.name}</b></a> ` +
+(tweet.check ? check : '') +
 `<a href="${base}${path}"><b>${tweet.date}</b></a> ` +
 `<span>🗨️ ${tweet.stats.replies}</span> ` +
 `<span>🔁 ${tweet.stats.retweets}</span> ` +
@@ -57,7 +59,7 @@ const run = async (matrixClient, { roomId }, userInput, registrar) => {
     timeout: 10 * 1000
   });
   const tweet = await nitter(instance, userInput);
-  return await matrixClient.sendHtmlNotice(roomId, '', card(tweet, `https://${config.domain}`, userInput));
+  return await matrixClient.sendHtmlNotice(roomId, '', card(tweet, `https://${config.domain}`, config.check, userInput));
 }
 
 exports.runQuery = async (client, room, userInput, registrar) => {
