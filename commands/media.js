@@ -2,20 +2,30 @@ const qs = require('qs');
 const axios = require('axios');
 const FormData = require('form-data');
 
+const getFilename = header => {
+  if(typeof header !== 'string') return null;
+  try {
+    const m = header.match(/inline; filename(?:=(.+)|\*=utf-8''(.+))/);
+    return !m ? null : m[2] && decodeURIComponent(m[2]) || m[1];
+  } catch(e) {
+    return null;
+  }
+};
+
 const mediaDownload = async (url, types) => {
   const media = await axios({ method: 'GET', url, responseType: 'arraybuffer' });
   if (media.statusText !== 'OK' || !types.includes(media.headers['content-type'])) throw media;
   return {
     data: media.data,
-    //filename: //TODO,
+    filename: getFilename(media.headers['content-disposition']),
     mimetype: media.headers['content-type']
   };
 };
 
-const mediaUpload = async ({ domain, token }, { data, mimetype }) => {
+const mediaUpload = async ({ domain, token }, { data, filename, mimetype }) => {
   const form = new FormData();
   form.append('file', data, {
-    filename: 'upload',
+    filename: filename || 'upload',
     contentType: mimetype,
   });
   const upload = await axios({
