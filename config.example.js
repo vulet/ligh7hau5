@@ -18,8 +18,8 @@ module.exports = {
   nitter: {
     domain: 'nitter.net',
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
-    domains: [ 'nitter.net', 'www.nitter.net', 'twitter.com', 'wwww.twitter.com' ],
-    check: '(âœ“)'
+    domains: [ 'nitter.net', 'www.nitter.net', 'twitter.com', 'www.twitter.com' ],
+    check: '(✅)'
   },
   invidious: {
     domain: 'invidious.fdn.fr',

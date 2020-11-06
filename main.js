@@ -72,6 +72,16 @@ let CreateClient = (token, user_id) => {
           });
           command = 'media';
           break;
+        case 'proxy':
+          try {
+            const url = new URL(userInput);
+            command = registrar.config.invidious.domains.includes(url.hostname)
+                    ? 'invidious'
+                    : registrar.config.nitter.domains.includes(url.hostname)
+                    ? 'nitter'
+                    : 'proxy';
+          } catch(e) {}
+          //fallthrough
         default:
           args.push(matrixClient, room, userInput, registrar);
       }
