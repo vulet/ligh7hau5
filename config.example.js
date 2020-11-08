@@ -4,7 +4,10 @@ module.exports = {
     user: 'your_user',
     password: 'your_password',
     domains: [ 'your_homeserver.com' ],
-    mimetypes: [ 'image/png', 'image/jpeg', 'video/webm', 'image/jpg', 'video/mp4', 'audio/mp3' ],
+    mimetypes: {
+      whitelist: [],
+      blacklist: []
+    },
     subject: ''
   },
   fediverse: {

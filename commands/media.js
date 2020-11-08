@@ -12,9 +12,10 @@ const getFilename = header => {
   }
 };
 
-const mediaDownload = async (url, types) => {
+const mediaDownload = async (url, { whitelist, blacklist }) => {
   const media = await axios({ method: 'GET', url, responseType: 'arraybuffer' });
-  if (media.statusText !== 'OK' || !types.includes(media.headers['content-type'])) throw media;
+  if (media.statusText !== 'OK' || blacklist.includes(media.headers['content-type'])) throw media;
+  if(whitelist.length && !whitelist.includes(media.headers['content-type'])) throw media;
   return {
     data: media.data,
     filename: getFilename(media.headers['content-disposition']),
