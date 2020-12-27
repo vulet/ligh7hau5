@@ -15,11 +15,11 @@ exports.runQuery = function (matrixClient, room, registrar) {
           matrixClient.sendHtmlNotice(room.roomId,
             '',
             `<b><a href="${registrar.config.fediverse.domain}/notice/${events.data[0].id}">${events.data[0].account.acct}</a>
-              <blockquote><i>${events.data[0].content}<br>
+              <blockquote><i>${events.data[0].content}</i><br>
               ${events.data[0].media_attachments.map(media =>
                 `<a href="${media.remote_url}">`+`${media.description}`+'</a>'
                 ).join('<br>')}
-              (id: ${events.data[0].id}</a>)
+              (id: ${events.data[0].id}) ${registrar.media.visibilityEmoji(events.data[0].visibility)}
               </blockquote>`);
         } else {
           matrixClient.sendHtmlNotice(room.roomId,
@@ -32,7 +32,7 @@ exports.runQuery = function (matrixClient, room, registrar) {
             ${events.data[0].media_attachments.map(media =>
                 `<a href="${media.remote_url}">`+`Proxied image, no description available.`+'</a>'
                 ).join('<br>')}
-            <br>(id: ${events.data[0].id})
+            <br>(id: ${events.data[0].id}) ${registrar.media.visibilityEmoji(events.data[0].visibility)}
             </blockquote>`);
         }
       }
