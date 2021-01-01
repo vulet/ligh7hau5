@@ -2,7 +2,7 @@ const qs = require('qs');
 const axios = require('axios');
 const FormData = require('form-data');
 
-const emojis = { public: 'ðŸŒ', unlisted: 'ðŸ“', private: 'ðŸ”’ï¸', direct: 'âœ‰ï¸' };
+const emojis = { public: '🌐', unlisted: '📝', private: '🔒️', direct: '✉️' };
 exports.visibilityEmoji = v => emojis[v] || v;
 
 const getFilename = header => {
