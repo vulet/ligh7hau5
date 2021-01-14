@@ -70,7 +70,7 @@ exports.runQuery = async (client, room, userInput, registrar, { isReply, hasMedi
     if(!chunks.length || chunks.length < !!isReply + !!hasMedia) throw '';
     let replyId = null;
     let mediaURL = null;
-    const subject = hasSubject ? registrar.config.matrix.subject : null;
+    const subject = hasSubject ? registrar.config.fediverse.subject : null;
     if(isReply) {
       replyId = chunks[0];
       chunks.shift();

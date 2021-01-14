@@ -3,16 +3,16 @@ module.exports = {
     domain: 'https://your_homeserver.com',
     user: 'your_user',
     password: 'your_password',
-    domains: [ 'your_homeserver.com' ],
-    subject: ''
+    domains: [ 'your_homeserver.com' ]
   },
   fediverse: {
     domain: 'https://your_federation.com',
     token: 'your_federation_token',
+    subject: '',
     mimetypes: {
       whitelist: [],
       blacklist: []
-    },
+    }
   },
   archive: {
     domain: 'archive.is',
