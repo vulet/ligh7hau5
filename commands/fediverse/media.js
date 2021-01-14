@@ -46,7 +46,7 @@ const run = async (matrixClient, { roomId }, content, replyId, mediaURL, subject
   let mediaId = null;
   const fediverse = registrar.config.fediverse;
   if(mediaURL) {
-    const media = await mediaDownload(mediaURL, registrar.config.matrix.mimetypes);
+    const media = await mediaDownload(mediaURL, registrar.config.fediverse.mimetypes);
     mediaId = await mediaUpload(fediverse, media);
   }
   const response = await axios({

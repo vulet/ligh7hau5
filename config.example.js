@@ -4,15 +4,15 @@ module.exports = {
     user: 'your_user',
     password: 'your_password',
     domains: [ 'your_homeserver.com' ],
-    mimetypes: {
-      whitelist: [],
-      blacklist: []
-    },
     subject: ''
   },
   fediverse: {
     domain: 'https://your_federation.com',
     token: 'your_federation_token',
+    mimetypes: {
+      whitelist: [],
+      blacklist: []
+    },
   },
   archive: {
     domain: 'archive.is',
