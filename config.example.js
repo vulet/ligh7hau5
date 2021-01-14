@@ -1,7 +1,7 @@
 module.exports = {
   matrix: {
     domain: 'https://your_homeserver.com',
-    user: 'your_user',
+    user: '@your_user:your_homeserver.com',
     password: 'your_password',
     domains: [ 'your_homeserver.com' ]
   },
