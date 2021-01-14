@@ -9,7 +9,7 @@ module.exports = {
   copy: require('./commands/fediverse/copy.js'),
   flood: require('./commands/fediverse/flood.js'),
   follow: require('./commands/fediverse/follow.js'),
-  help: require('./commands/fediverse/help.js'),
+  help: require('./commands/help.js'),
   media: require('./commands/fediverse/media.js'),
   mordy: require('./commands/fediverse/mordy.js'),
   notify: require('./commands/fediverse/notify.js'),
