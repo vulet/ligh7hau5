@@ -76,8 +76,10 @@ exports.runQuery = async (client, room, userInput, registrar, { isReply, hasMedi
       chunks.shift();
     }
     if(hasMedia) {
-      const url = new URL(chunks[0]);
+      let url = new URL(chunks[0]);
       chunks.shift();
+      if(url.protocol === 'mxc:' && url.hostname && url.pathname)
+        url = new URL(`${registrar.config.matrix.domain}/_matrix/media/r0/download/${url.hostname}${url.pathname}`);
       if(url.protocol !== 'https:') throw '';
       if(!registrar.config.matrix.domains.includes(url.hostname)) throw '';
       if(!/^\/_matrix\/media\/r0\/download\/[^/]+\/[^/]+\/?$/.test(url.pathname)) throw '';
