@@ -27,6 +27,6 @@ module.exports = {
   invidious: {
     domain: 'invidious.fdn.fr',
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
-    domains: [ 'invidious.snopyta.org', 'invidious.xyz', 'youtube.com', 'www.youtube.com' ]
+    domains: [ 'invidious.snopyta.org', 'invidious.xyz', 'youtube.com', 'www.youtube.com', 'youtu.be' ]
   }
 };

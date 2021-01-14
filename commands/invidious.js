@@ -47,8 +47,10 @@ exports.runQuery = async (client, room, userInput, registrar) => {
   try {
     const url = new URL(userInput);
     if(!registrar.config.invidious.domains.includes(url.hostname)) throw '';
+    if(/^\/[\w-]{11}$/.test(url.pathname))
+      return await run(client, room, url.pathname.slice(1), registrar);
     const params = new URLSearchParams(url.search).get("v");
-    if(!/([a-z0-9_-]{11})?$/.test(params)) throw '';
+    if(!/^[\w-]{11}$/.test(params)) throw '';
     return await run(client, room, params, registrar);
   } catch(e) {
     return client.sendHtmlNotice(room.roomId, 'Sad!', `<strong>Sad!</strong>`).catch(()=>{});
