@@ -26,7 +26,7 @@ const mediaDownload = async (url, { whitelist, blacklist }) => {
   };
 };
 
-const mediaUpload = async ({ domain, token }, { data, filename, mimetype }) => {
+const mediaUpload = async ({ domain }, { data, filename, mimetype }, registrar) => {
   const form = new FormData();
   form.append('file', data, {
     filename: filename || 'upload',
@@ -35,7 +35,7 @@ const mediaUpload = async ({ domain, token }, { data, filename, mimetype }) => {
   const upload = await axios({
     method: 'POST',
     url: `${domain}/api/v1/media`,
-    headers: form.getHeaders({ Authorization: `Bearer ${token}` }),
+    headers: form.getHeaders({ Authorization: `Bearer ${registrar.fediverse_auth.access_token}` }),
     data: form,
   });
   if(upload.statusText !== 'OK') throw upload;
@@ -47,12 +47,12 @@ const run = async (matrixClient, { roomId }, content, replyId, mediaURL, subject
   const fediverse = registrar.config.fediverse;
   if(mediaURL) {
     const media = await mediaDownload(mediaURL, registrar.config.fediverse.mimetypes);
-    mediaId = await mediaUpload(fediverse, media);
+    mediaId = await mediaUpload(fediverse, media, registrar);
   }
   const response = await axios({
     method: 'POST',
     url: `${fediverse.domain}/api/v1/statuses`,
-    headers: { Authorization: `Bearer ${fediverse.token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { Authorization: `Bearer ${registrar.fediverse_auth.access_token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
     data : qs.stringify({
       status: content,
       content_type: `text/markdown`,

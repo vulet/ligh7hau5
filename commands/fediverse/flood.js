@@ -6,7 +6,7 @@ exports.runQuery = function (matrixClient, room, registrar) {
     axios({
       method: 'GET',
       url: `${registrar.config.fediverse.domain}/api/v1/timelines/home`,
-      headers: { Authorization: `Bearer ${registrar.config.fediverse.token}` },
+      headers: { Authorization: `Bearer ${registrar.fediverse_auth.access_token}` },
     }).then((events) => {
       const event = fs.readFileSync('timeline.json', 'utf8');
       fs.writeFileSync('timeline.json', events.data[0].created_at, 'utf8');

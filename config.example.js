@@ -7,7 +7,9 @@ module.exports = {
   },
   fediverse: {
     domain: 'https://your_federation.com',
-    token: 'your_federation_token',
+    username: '',
+    password: '',
+    client_name: '',
     subject: '',
     mimetypes: {
       whitelist: [],

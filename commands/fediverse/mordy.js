@@ -4,9 +4,9 @@ exports.runQuery = function (matrixClient, room, userInput, registrar) {
   axios({
     method: 'POST',
     url: `${registrar.config.fediverse.domain}/api/v1/statuses`,
-    headers: { Authorization: `Bearer ${registrar.config.fediverse.token}` },
-    data: { 
-      status: `@mordekai ${userInput}`, 
+    headers: { Authorization: `Bearer ${registrar.fediverse_auth.access_token}` },
+    data: {
+      status: `@mordekai ${userInput}`,
       content_type: `text/markdown`,
       visibility: 'unlisted',
       expires_in: '7200'

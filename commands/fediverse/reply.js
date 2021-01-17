@@ -4,7 +4,7 @@ exports.runQuery = function (matrixClient, room, address, flaggedInput, registra
   axios({
     method: 'POST',
     url: `${registrar.config.fediverse.domain}/api/v1/statuses`,
-    headers: { Authorization: `Bearer ${registrar.config.fediverse.token}` },
+    headers: { Authorization: `Bearer ${registrar.fediverse_auth.access_token}` },
     data: { status: flaggedInput, in_reply_to_id: address, content_type: `text/markdown` },
   }).then((response) => {
     matrixClient.sendHtmlNotice(room.roomId,

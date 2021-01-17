@@ -1,5 +1,7 @@
 module.exports = {
   config: require('./config.js'),
+  fediverse_auth: require('./fediverse_auth.json'),
+  matrix_auth: require('./matrix_auth.json'),
   archive: require('./commands/archive.js'),
   invidious: require('./commands/invidious.js'),
   nitter: require('./commands/nitter.js'),

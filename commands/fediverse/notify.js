@@ -6,7 +6,7 @@ exports.runQuery = function (matrixClient, room, registrar) {
     axios({
       method: 'GET',
       url: `${registrar.config.fediverse.domain}/api/v1/notifications`,
-      headers: { Authorization: `Bearer ${registrar.config.fediverse.token}` },
+      headers: { Authorization: `Bearer ${registrar.fediverse_auth.access_token}` },
     }).then((notifications) => {
       const event = fs.readFileSync('notification.json', 'utf8');
       fs.writeFileSync('notification.json', notifications.data[0].created_at, 'utf8');

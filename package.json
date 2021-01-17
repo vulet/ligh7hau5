@@ -1,6 +1,6 @@
 {
-  "name": "plemara",
-  "version": "0.3.0",
+  "name": "ligh7hau5",
+  "version": "0.4.0",
   "description": "A Matrix to Fediverse client",
   "main": "main.js",
   "scripts": {
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vulet/plemara.git"
+    "url": "git+https://github.com/vulet/ligh7hau5.git"
   },
   "author": "vul",
   "license": "AGPL-3.0-only",
   "bugs": {
-    "url": "https://github.com/vulet/plemara/issues"
+    "url": "https://github.com/vulet/lighthau5/issues"
   },
-  "homepage": "https://github.com/vulet/plemara#readme",
+  "homepage": "https://github.com/vulet/lighthau5#readme",
   "dependencies": {
     "axios": "^0.19.2",
     "file-system": "^2.2.2",
