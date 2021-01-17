@@ -2,10 +2,11 @@ exports.runQuery = function (matrixClient, room) {
   matrixClient.sendHtmlNotice(room.roomId,
     '',
     '<blockquote><b>fediverse commands<br>'
-          + '+plemara [your message] : post<br>'
+          + '+post [your message] : post<br>'
           + '+redact [post id] : delete post<br>'
           + '+follow [user id] : follow<br>'
           + '+unfollow [user id] : unfollow<br>'
+          + '+media [homeserver image URL or MXC] [optional message] : post media<br>'
           + '+copy [post id] : repeat/repost/retweet<br>'
           + '+reply [post id] [content] : reply to post<br>'
           + '+tip [@user@fedi.url] [amount] : tip 10grans<br>'
@@ -18,7 +19,8 @@ exports.runQuery = function (matrixClient, room) {
           + '+archive [URL] : archive content<br>'
           + '+rearchive [URL] : re-archive content<br>'
           + '+nitter [status URL] : redirect twitter to nitter, also embed tweet<br>'
-          + '+invidious [video URL] : redirect youtube to invidious, also embed description</b><br></blockquote>'
+          + '+invidious [video URL] : redirect youtube to invidious, also embed description<br>'
+          + '+proxy [twitter/youtube]: both +nitter and +invidious commands combined</b><br></blockquote>'
           + '<blockquote><b>--- <i>Contributors🐱</i> ---</b><br>'
           + '<b>CRYPTOMOONERS</b><br>'
           + '<b><i>docs by LINT</i></b></blockquote>');
