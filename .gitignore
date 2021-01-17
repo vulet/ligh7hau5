@@ -14,6 +14,8 @@ config.js
 # Ignore JSON
 timeline.json
 notification.json
+matrix_auth.json
+fediverse_auth.json
 
 # Runtime data
 pids
