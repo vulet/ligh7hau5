@@ -1,43 +1,46 @@
-# Plemara   
-Plemara acts as a [Matrix](https://matrix.org/docs/spec/) bridge to the Fediverse. This application should allow you to do most actions on the Fediverse including livefeed, posting, subscribing, etc. via Matrix. Configuration for the app can be found in [config.js](https://github.com/vulet/plemara/blob/master/config.js). You will need to provide a Matrix username and password for the bridge to work, this can be done through an account made on @matrix.org, or your own homeserver. For the Fediverse side, you will need an access_token, this can be created through the CURL steps below. You would replace `fediverse.site` with where you would like to run the bridge from.
+# ligh7hau5
 
+The ligh7hau5 project is used on the Matrix protocol to communicate with the Fediverse. It is also used to proxy popular media networks(Twitter, YouTube, etc) to alternative front ends(Nitter, Invidious, etc). This repository can be ran locally, as on a RPi, or on a VPS.
+# Archive (+archive URL)
+
+This command will send a given URL to archive.is, and return an archive.is URL. This can be beneficial in two ways. One, archive.is receives your traffic instead of the URL that you wish to archive. Two, you are creating a historical context of a given URL with a dated attribute. Additionally, if there are changes that have occurred on a page, since the time of last archive, you can also use the rearchive(+rearchive URL) command. If you wish to use a different archiver, this can be configured, see the config.example.js file.
+# Social Media (+proxy URL)
+
+This command is given a Twitter or YouTube post, and then returned a respective Nitter/Invidious URL. Additionally, some data is returned about what the URL is, such as: title, description, etc. Instances can also be configured like in the above, see the config.example.js file.
+# Fediverse
+
+The ligh7hau5 works as a lite client for the Fediverse. It was built to communicate with a Pleroma instance, but it most likely works on Mastodon as well. Assuming you already have a registered account in regards to the bot, just change the config.js file and fediverse_auth.json will fill out once the bot starts.
+
+Commands for the Fediverse include:
+
+`+flood : turn on timeline in channel`
+
+`+notify : show notifications in channel`
+
+`+post <your message> : post`
+
+`+reply <post id> <message> : reply to message`
+
+`+media <URL> <optional message> : post media`
+
+`+redact <post id> : delete post`
+
+`+follow <user id> : follow`
+
+`+unfollow <user id> : unfollow`
+
+`+copy <post id> : repeat/repost/retweet`
+
+`+clap <post id> : favorite`
+
+`+boo <post id> : unfavorite`
 
 # Installation
-1. `git clone https://github.com/vulet/plemara`
-2. `cd plemara && yarn install`
+
+First, set up your config.js file, you can see config.example.js as an example. The Matrix & Fediverse login information is used to populate matrix_auth.json and fediverse_auth.json during your initial login. These tokens are then used on sequential logins.
+1. `git clone https://github.com/vulet/ligh7hau5`
+2. `cd ligh7hau5 && yarn install`
 3. `node main.js`
-# Generating an access_token
-1. `curl -X POST -d "client_name=<NAME HERE>&redirect_uris=urn:ietf:wg:oauth:2.0:oob&scopes=write follow read&website=http://fediverse.site" https://fediverse.site/api/v1/apps`
-
-Result:
-```json
-{"client_id":"result",
-"client_secret":"result",
-"id":"result",
-"name":"result",
-"redirect_uri":"urn:ietf:wg:oauth:2.0:oob",
-"website":"http://fediverse.site",
-"vapid_key":"vapid_key"}
-```
-
-2. `curl -X POST -d "client_id=sekret&client_secret=sekret&scope=write follow read&grant_type=password&username=sekret@email.com&password=sekret" https://fediverse.site/oauth/token`
-
-Result:
-```json
-{"token_type":"Bearer",
-"scope":"write read",
-"me":"https://fediverse.site/users/<your username>",
-"access_token":"result"}
-```
-
-The access_token from the above command is then stored in the [config.js](https://github.com/vulet/plemara/blob/master/config.js) file.
-
-
-# Extra Features
-- Nitter.net / Twitter
-- Invidio.us / YouTube
-- Archive.is
-
 
 # Contributors
 CryptoMooners
