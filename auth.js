@@ -7,6 +7,8 @@ module.exports.getMatrixToken = async () => {
   matrixClient = sdk.createClient(registrar.config.matrix.domain);
   matrixClient.loginWithPassword(registrar.config.matrix.user, registrar.config.matrix.password)
     .then((response) => {
+      registrar.matrix_auth.access_token = response.access_token;
+      registrar.matrix_auth.user_id = response.user_id;
       fs.writeFileSync('matrix_auth.json', JSON.stringify(response, null, 2));
       matrixClient.startClient();
     });
@@ -41,6 +43,7 @@ module.exports.registerFediverseApp = async () => {
           redirect_uri: 'urn:ietf:wg:oauth:2.0:oob',
         })
         .then((tokens) => {
+          registrar.fediverse_auth.access_token = tokens.data.access_token;
           fs.writeFileSync('fediverse_auth.json', JSON.stringify(tokens.data, null, 2));
         })
         .catch((e) => {
