@@ -9,7 +9,7 @@ module.exports = {
     domain: 'https://your_federation.com',
     username: '',
     password: '',
-    client_name: '',
+    client_name: 'ligh7hau5',
     subject: '',
     mimetypes: {
       whitelist: [],
