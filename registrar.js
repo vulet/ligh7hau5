@@ -1,3 +1,12 @@
+const fs = require('fs');
+
+//initializers
+if (!fs.existsSync('fediverse_auth.json')) fs.copyFileSync('fediverse_auth.example.json', 'fediverse_auth.json');
+if (!fs.existsSync('matrix_auth.json')) fs.copyFileSync('matrix_auth.example.json', 'matrix_auth.json');
+if (!fs.existsSync('config.js')) fs.copyFileSync('config.example.js', 'config.js');
+if (!fs.existsSync('timeline.json')) fs.writeFileSync('timeline.json', 0);
+if (!fs.existsSync('notification.json')) fs.writeFileSync('notification.json', 0);
+
 module.exports = {
   config: require('./config.js'),
   fediverse_auth: require('./fediverse_auth.json'),
