@@ -1,15 +1,13 @@
-const axios = require('axios');
-
-exports.runQuery = function (matrixClient, room, userInput, registrar) {
+exports.runQuery = function (matrixClient, room, userInput) {
   axios({
     method: 'POST',
-    url: `${registrar.config.fediverse.domain}/api/v1/statuses/${userInput}/unpin`,
-    headers: { Authorization: `Bearer ${registrar.fediverse_auth.access_token}` },
+    url: `${config.fediverse.domain}/api/v1/statuses/${userInput}/unpin`,
+    headers: { Authorization: `Bearer ${fediverse_auth.access_token}` },
   }).then((response) => {
     matrixClient.sendHtmlNotice(room.roomId,
           '',
           `Unpinned:
-          <blockquote><i><a href="${registrar.config.fediverse.domain}/notice/${response.data.id}">
+          <blockquote><i><a href="${config.fediverse.domain}/notice/${response.data.id}">
           ${response.data.content}</a></i>
           </blockquote>`);
   })

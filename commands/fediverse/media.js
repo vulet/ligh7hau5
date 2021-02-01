@@ -1,5 +1,4 @@
 const qs = require('qs');
-const axios = require('axios');
 const FormData = require('form-data');
 
 const emojis = { public: '🌐', unlisted: '📝', private: '🔒️', direct: '✉️' };
@@ -26,7 +25,7 @@ const mediaDownload = async (url, { whitelist, blacklist }) => {
   };
 };
 
-const mediaUpload = async ({ domain }, { data, filename, mimetype }, registrar) => {
+const mediaUpload = async ({ domain }, { data, filename, mimetype }) => {
   const form = new FormData();
   form.append('file', data, {
     filename: filename || 'upload',
@@ -35,24 +34,24 @@ const mediaUpload = async ({ domain }, { data, filename, mimetype }, registrar) 
   const upload = await axios({
     method: 'POST',
     url: `${domain}/api/v1/media`,
-    headers: form.getHeaders({ Authorization: `Bearer ${registrar.fediverse_auth.access_token}` }),
+    headers: form.getHeaders({ Authorization: `Bearer ${fediverse_auth.access_token}` }),
     data: form,
   });
   if(upload.statusText !== 'OK') throw upload;
   return upload.data.id;
 };
 
-const run = async (matrixClient, { roomId }, content, replyId, mediaURL, subject, registrar) => {
+const run = async (matrixClient, { roomId }, content, replyId, mediaURL, subject) => {
   let mediaId = null;
-  const fediverse = registrar.config.fediverse;
+  const fediverse = config.fediverse;
   if(mediaURL) {
-    const media = await mediaDownload(mediaURL, registrar.config.fediverse.mimetypes);
-    mediaId = await mediaUpload(fediverse, media, registrar);
+    const media = await mediaDownload(mediaURL, fediverse.mimetypes);
+    mediaId = await mediaUpload(fediverse, media);
   }
   const response = await axios({
     method: 'POST',
     url: `${fediverse.domain}/api/v1/statuses`,
-    headers: { Authorization: `Bearer ${registrar.fediverse_auth.access_token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { Authorization: `Bearer ${fediverse_auth.access_token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
     data : qs.stringify({
       status: content,
       content_type: `text/markdown`,
@@ -64,13 +63,13 @@ const run = async (matrixClient, { roomId }, content, replyId, mediaURL, subject
   return matrixClient.sendHtmlNotice(roomId, '', `<a href="${response.data.url}">${response.data.id}</a>`);
 }
 
-exports.runQuery = async (client, room, userInput, registrar, { isReply, hasMedia, hasSubject }) => {
+exports.runQuery = async (client, room, userInput, { isReply, hasMedia, hasSubject }) => {
   try {
     const chunks = userInput.trim().split(' ');
     if(!chunks.length || chunks.length < !!isReply + !!hasMedia) throw '';
     let replyId = null;
     let mediaURL = null;
-    const subject = hasSubject ? registrar.config.fediverse.subject : null;
+    const subject = hasSubject ? fediverse.subject : null;
     if(isReply) {
       replyId = chunks[0];
       chunks.shift();
@@ -79,13 +78,13 @@ exports.runQuery = async (client, room, userInput, registrar, { isReply, hasMedi
       let url = new URL(chunks[0]);
       chunks.shift();
       if(url.protocol === 'mxc:' && url.hostname && url.pathname)
-        url = new URL(`${registrar.config.matrix.domain}/_matrix/media/r0/download/${url.hostname}${url.pathname}`);
+        url = new URL(`${config.matrix.domain}/_matrix/media/r0/download/${url.hostname}${url.pathname}`);
       if(url.protocol !== 'https:') throw '';
-      if(!registrar.config.matrix.domains.includes(url.hostname)) throw '';
+      if(!config.matrix.domains.includes(url.hostname)) throw '';
       if(!/^\/_matrix\/media\/r0\/download\/[^/]+\/[^/]+\/?$/.test(url.pathname)) throw '';
       mediaURL = url.toString();
     }
-    return await run(client, room, chunks.join(' '), replyId, mediaURL, subject, registrar);
+    return await run(client, room, chunks.join(' '), replyId, mediaURL, subject);
   } catch(e) {
     return client.sendHtmlNotice(room.roomId, 'Sad!', `<strong>Sad!</strong>`).catch(()=>{});
   }
