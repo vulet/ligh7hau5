@@ -1,8 +1,7 @@
 exports.runQuery = function (matrixClient, room) {
   matrixClient.sendHtmlNotice(room.roomId,
     '',
-    '<blockquote>ligh7hau5 version 1.1.0<br>'
-          + '<b>fediverse commands<br>'
+    '<blockquote><b>fediverse commands<br>'
           + '+post [your message] : post<br>'
           + '+redact [post id] : delete post<br>'
           + '+follow [user id] : follow<br>'
@@ -22,7 +21,9 @@ exports.runQuery = function (matrixClient, room) {
           + '+nitter [status URL] : redirect twitter to nitter, also embed tweet<br>'
           + '+invidious [video URL] : redirect youtube to invidious, also embed description<br>'
           + '+proxy [twitter/youtube]: both +nitter and +invidious commands combined</b><br></blockquote>'
-          + '<blockquote><b>--- <i>Contributors🐱</i> ---</b><br>'
+          + `<blockquote><b>ligh7hau5 version ${require('../package.json').version}</b><br>`
+          + '<b>--- <i>Contributors🐱</i> ---</b><br>'
           + '<b>CRYPTOMOONERS</b><br>'
-          + '<b><i>docs by LINT</i></b></blockquote>');
+          + '<b><i>docs by LINT</i></b></blockquote>'
+);
 };
