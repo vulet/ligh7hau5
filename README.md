@@ -37,7 +37,8 @@ Commands for the Fediverse include:
 
 # Installation
 
-First, set up your config.js file, you can see config.example.js as an example. The Matrix & Fediverse login information is used to populate matrix_auth.json and fediverse_auth.json during your initial login. These tokens are then used on sequential logins.
+First, set up your config.js file, you can see config.example.js as an example. The Matrix & Fediverse login information is then used to populate keys/matrix_auth and keys/fediverse_auth during your initial login. These tokens are then used on sequential logins.
+
 1. `git clone https://github.com/vulet/ligh7hau5`
 2. `cd ligh7hau5 && yarn install`
 3. `node main.js`

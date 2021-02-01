@@ -11,11 +11,8 @@ yarn-error.log*
 # Ignore config
 config.js
 
-# Ignore JSON
-timeline.json
-notification.json
-matrix_auth.json
-fediverse_auth.json
+# Ignore localstorage
+keys
 
 # Runtime data
 pids
