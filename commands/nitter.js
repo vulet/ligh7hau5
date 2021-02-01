@@ -1,4 +1,3 @@
-const axios = require('axios');
 const { JSDOM } = require("jsdom");
 
 const headers = ({ domain, userAgent }) => ({
@@ -50,24 +49,23 @@ const card = (tweet, base, check, path) =>
 (tweet.hasAttachments ? '<blockquote><b>This tweet has attached media.</b></blockquote>' : '') +
 (tweet.isReply ? tweet.isReply === 'unavailable' ? '<blockquote>Replied Tweet is unavailable</blockquote>' : `<blockquote><b><a href="${base}${tweet.isReply.path}">Replied Tweet</a></b><br /><b><i>${tweet.isReply.text.replace('\n', '<br />')}</i></b></blockquote>` : '') +
 (tweet.quote ? `<blockquote><b><a href="${base}${tweet.quote.path}">Quoted Tweet</a></b><br /><b><i>${tweet.quote.text.replace('\n', '<br />')}</i></b></blockquote>` : '');
-const run = async (matrixClient, { roomId }, userInput, registrar) => {
-  const config = registrar.config.nitter;
+const run = async (matrixClient, { roomId }, userInput) => {
   const instance = axios.create({
-    baseURL: `https://${config.domain}`,
-    headers: headers(config),
+    baseURL: `https://${config.nitter.domain}`,
+    headers: headers(config.nitter),
     transformResponse: [],
     timeout: 10 * 1000
   });
   const tweet = await nitter(instance, userInput);
-  return await matrixClient.sendHtmlNotice(roomId, '', card(tweet, `https://${config.domain}`, config.check, userInput));
+  return await matrixClient.sendHtmlNotice(roomId, '', card(tweet, `https://${config.nitter.domain}`, config.nitter.check, userInput));
 }
 
-exports.runQuery = async (client, room, userInput, registrar) => {
+exports.runQuery = async (client, room, userInput) => {
   try {
     const url = new URL(userInput);
-    if(!registrar.config.nitter.domains.includes(url.hostname)) throw '';
+    if(!config.nitter.domains.includes(url.hostname)) throw '';
     if(!/^\/[^/]+\/status\/\d+\/?$/.test(url.pathname)) throw '';
-    return await run(client, room, url.pathname, registrar);
+    return await run(client, room, url.pathname);
   } catch(e) {
     return client.sendHtmlNotice(room.roomId, 'Sad!', `<strong>Sad!</strong>`).catch(()=>{});
   }

@@ -1,5 +1,3 @@
-const axios = require('axios');
-
 const headers = ({ domain, userAgent }) => ({
   'Host': `${domain}`,
   'User-Agent': `${userAgent}`
@@ -31,28 +29,28 @@ const card = (video, base, path) =>
 `<br />(${video.date})</b> <br />
  </blockquote>`;
 
-const run = async (matrixClient, { roomId }, userInput, registrar) => {
-  const config = registrar.config.invidious;
+const run = async (matrixClient, { roomId }, userInput) => {
   const instance = axios.create({
-    baseURL: `https://${config.domain}/api/v1/videos/`,
-    headers: headers(config),
+    baseURL: `https://${config.invidious.domain}/api/v1/videos/`,
+    headers: headers(config.invidious),
     transformResponse: [],
     timeout: 10 * 1000
   });
   const video = await invidious(instance, userInput);
-  return await matrixClient.sendHtmlNotice(roomId, '', card(video, `https://${config.domain}`, userInput));
+  return await matrixClient.sendHtmlNotice(roomId, '', card(video, `https://${config.invidious.domain}`, userInput));
 }
 
-exports.runQuery = async (client, room, userInput, registrar) => {
+exports.runQuery = async (client, room, userInput) => {
   try {
     const url = new URL(userInput);
-    if(!registrar.config.invidious.domains.includes(url.hostname)) throw '';
+    if(!config.invidious.domains.includes(url.hostname)) throw '';
     if(/^\/[\w-]{11}$/.test(url.pathname))
-      return await run(client, room, url.pathname.slice(1), registrar);
+      return await run(client, room, url.pathname.slice(1));
     const params = new URLSearchParams(url.search).get("v");
     if(!/^[\w-]{11}$/.test(params)) throw '';
-    return await run(client, room, params, registrar);
+    return await run(client, room, params);
   } catch(e) {
+    console.log(e);
     return client.sendHtmlNotice(room.roomId, 'Sad!', `<strong>Sad!</strong>`).catch(()=>{});
   }
 };

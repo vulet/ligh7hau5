@@ -1,16 +1,24 @@
-const fs = require('fs');
+global.Olm = require('olm');
+global.sdk = require('matrix-js-sdk');
+global.axios = require('axios');
+global.config = require('./config.js');
+global.auth = require('./auth.js');
 
-//initializers
-if (!fs.existsSync('fediverse_auth.json')) fs.copyFileSync('fediverse_auth.example.json', 'fediverse_auth.json');
-if (!fs.existsSync('matrix_auth.json')) fs.copyFileSync('matrix_auth.example.json', 'matrix_auth.json');
-if (!fs.existsSync('config.js')) fs.copyFileSync('config.example.js', 'config.js');
-if (!fs.existsSync('timeline.json')) fs.writeFileSync('timeline.json', 0);
-if (!fs.existsSync('notification.json')) fs.writeFileSync('notification.json', 0);
+const { LocalStorage } = require('node-localstorage');
+global.localStorage = new LocalStorage('./keys');
+if (!localStorage.getItem('matrix_auth')){
+  localStorage.clear();
+  localStorage.setItem('matrix_auth', "{}");
+}
+if (!localStorage.getItem('fediverse_auth')) localStorage.setItem('fediverse_auth', "{}");
+if (!localStorage.getItem('timeline')) localStorage.setItem('timeline', "{}");
+if (!localStorage.getItem('notifications')) localStorage.setItem('notifications', "{}");
+
+global.matrix_auth = JSON.parse(localStorage.getItem('matrix_auth'));
+global.fediverse_auth = JSON.parse(localStorage.getItem('fediverse_auth'));
 
 module.exports = {
   config: require('./config.js'),
-  fediverse_auth: require('./fediverse_auth.json'),
-  matrix_auth: require('./matrix_auth.json'),
   archive: require('./commands/archive.js'),
   invidious: require('./commands/invidious.js'),
   nitter: require('./commands/nitter.js'),

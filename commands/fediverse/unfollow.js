@@ -1,17 +1,15 @@
-const axios = require('axios');
-
-exports.runQuery = function (matrixClient, room, userInput, registrar) {
-  axios.get(`${registrar.config.fediverse.domain}/api/v1/accounts/${userInput}`).then((findUID) => {
+exports.runQuery = function (matrixClient, room, userInput) {
+  axios.get(`${config.fediverse.domain}/api/v1/accounts/${userInput}`).then((findUID) => {
     axios({
       method: 'POST',
-      url: `${registrar.config.fediverse.domain}/api/v1/accounts/${findUID.data.id}/unfollow`,
-      headers: { Authorization: `Bearer ${registrar.fediverse_auth.access_token}` },
+      url: `${config.fediverse.domain}/api/v1/accounts/${findUID.data.id}/unfollow`,
+      headers: { Authorization: `Bearer ${fediverse_auth.access_token}` },
     })
       .then((response) => {
         matrixClient.sendHtmlNotice(room.roomId,
           '',
           `Unsubscribed:
-          <blockquote>${registrar.config.fediverse.domain}/${response.data.id}`);
+          <blockquote>${config.fediverse.domain}/${response.data.id}`);
       });
   }).catch((e) => {
     matrixClient.sendHtmlNotice(room.roomId,
