@@ -40,7 +40,7 @@ const nitter = async (instance, url) => {
 
 const card = (tweet, base, check, path) =>
 `<a href="${base}/${tweet.handle.replace(/^@/, '')}"><b>${tweet.name}</b></a> ` +
-(tweet.check ? check : '') +
+(tweet.check ? `${check} ` : '') +
 `<a href="${base}${path}"><b>${tweet.date}</b></a> ` +
 `<span>🗨️ ${tweet.stats.replies}</span> ` +
 `<span>🔁 ${tweet.stats.retweets}</span> ` +

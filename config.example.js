@@ -21,7 +21,7 @@ module.exports = {
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)'
   },
   nitter: {
-    domain: 'nitter.net',
+    domain: 'nitter.fdn.fr',
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
     domains: [ 'nitter.net', 'www.nitter.net', 'twitter.com', 'www.twitter.com' ],
     check: '(✅)'
