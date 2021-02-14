@@ -1,45 +1,44 @@
 const { LocalStorageCryptoStore } = require('matrix-js-sdk/lib/crypto/store/localStorage-crypto-store');
 
-module.exports.getMatrixToken = async () => {
-  matrixClient = sdk.createClient(config.matrix.domain);
-  matrixClient.loginWithPassword(config.matrix.user, config.matrix.password)
-    .then((response) => {
-      matrix_auth = {
-        user_id: response.user_id,
-        access_token: response.access_token,
-        device_id: response.device_id,
-      };
-      localStorage.setItem('matrix_auth', JSON.stringify(response, null, 2));
-    }).then(() => {
-      matrixTokenLogin();
-    })
-    .catch((e) => {
-      console.log(e);
-    });
-};
-
-matrixTokenLogin = async () => {
+const matrixTokenLogin = async () => {
   matrixClient = sdk.createClient({
     baseUrl: config.matrix.domain,
-    accessToken: matrix_auth.access_token,
-    userId: matrix_auth.user_id,
-    deviceId: matrix_auth.device_id,
+    accessToken: matrix.auth.access_token,
+    userId: matrix.auth.user_id,
+    deviceId: matrix.auth.device_id,
     sessionStore: new sdk.WebStorageSessionStore(localStorage),
     cryptoStore: new LocalStorageCryptoStore(localStorage),
   });
   matrixClient.initCrypto()
-  .then(() => {
-      if(!localStorage.getItem('crypto.device_data'))
+    .then(() => {
+      if (!localStorage.getItem('crypto.device_data')) {
         return console.log(
-          '====================================================\n'+
-          'New OLM Encryption Keys created, please restart ligh7hau5.\n'+
-          '===================================================='
+          '====================================================\n'
+          + 'New OLM Encryption Keys created, please restart ligh7hau5.\n'
+          + '====================================================',
         );
+      }
       matrixClient.startClient();
     });
 };
 
 module.exports.matrixTokenLogin = matrixTokenLogin;
+
+module.exports.getMatrixToken = async () => {
+  matrixClient = sdk.createClient(config.matrix.domain);
+  matrixClient.loginWithPassword(config.matrix.user, config.matrix.password)
+    .then((response) => {
+      matrix.auth = {
+        user_id: response.user_id,
+        access_token: response.access_token,
+        device_id: response.device_id,
+      };
+      localStorage.setItem('matrix_auth', JSON.stringify(response, null, 2));
+    }).then(() => matrixTokenLogin())
+    .catch((e) => {
+      console.log(e);
+    });
+};
 
 module.exports.registerFediverseApp = async () => {
   axios.post(`${config.fediverse.domain}/api/v1/apps`,

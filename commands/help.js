@@ -1,5 +1,5 @@
-exports.runQuery = function (matrixClient, room) {
-  matrixClient.sendHtmlNotice(room.roomId,
+exports.runQuery = function (roomId) {
+  matrixClient.sendHtmlNotice(roomId,
     '',
     '<blockquote><b>fediverse commands<br>'
           + '+post [your message] : post<br>'

@@ -1,6 +1,6 @@
 const headers = ({ domain, userAgent }) => ({
-  'Host': `${domain}`,
-  'User-Agent': `${userAgent}`
+  Host: `${domain}`,
+  'User-Agent': `${userAgent}`,
 });
 
 const invidious = async (instance, url) => {
@@ -14,7 +14,7 @@ const invidious = async (instance, url) => {
     author: video.author,
     views: video.viewCount,
     likes: video.likeCount,
-    dislikes: video.dislikeCount
+    dislikes: video.dislikeCount,
   };
 };
 
@@ -29,28 +29,26 @@ const card = (video, base, path) =>
 `<br />(${video.date})</b> <br />
  </blockquote>`;
 
-const run = async (matrixClient, { roomId }, userInput) => {
+const run = async (roomId, userInput) => {
   const instance = axios.create({
     baseURL: `https://${config.invidious.domain}/api/v1/videos/`,
     headers: headers(config.invidious),
     transformResponse: [],
-    timeout: 10 * 1000
+    timeout: 10 * 1000,
   });
   const video = await invidious(instance, userInput);
   return await matrixClient.sendHtmlNotice(roomId, '', card(video, `https://${config.invidious.domain}`, userInput));
-}
+};
 
-exports.runQuery = async (client, room, userInput) => {
+exports.runQuery = async (roomId, event, userInput) => {
   try {
     const url = new URL(userInput);
-    if(!config.invidious.domains.includes(url.hostname)) throw '';
-    if(/^\/[\w-]{11}$/.test(url.pathname))
-      return await run(client, room, url.pathname.slice(1));
-    const params = new URLSearchParams(url.search).get("v");
-    if(!/^[\w-]{11}$/.test(params)) throw '';
-    return await run(client, room, params);
-  } catch(e) {
-    console.log(e);
-    return client.sendHtmlNotice(room.roomId, 'Sad!', `<strong>Sad!</strong>`).catch(()=>{});
+    if (!config.invidious.domains.includes(url.hostname)) throw '';
+    if (/^\/[\w-]{11}$/.test(url.pathname)) return await run(roomId, url.pathname.slice(1));
+    const params = new URLSearchParams(url.search).get('v');
+    if (!/^[\w-]{11}$/.test(params)) throw '';
+    return await run(roomId, params);
+  } catch (e) {
+    return matrixClient.sendHtmlNotice(roomId, 'Sad!', '<strong>Sad!</strong>').catch(() => {});
   }
 };
