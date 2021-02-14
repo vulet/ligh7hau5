@@ -1,47 +1,26 @@
-exports.runQuery = function (matrixClient, room) {
+exports.runQuery = function (roomId) {
   setInterval(() => {
     axios({
       method: 'GET',
       url: `${config.fediverse.domain}/api/v1/notifications`,
-      headers: { Authorization: `Bearer ${fediverse_auth.access_token}` },
-    }).then((events) => {
-      let lastEvent = JSON.parse(localStorage.getItem('notifications'));
-      localStorage.setItem('notifications', JSON.stringify(events.data[0].created_at, null, 2));
-      if (lastEvent !== events.data[0].created_at) {
-        if (events.data[0].type === 'follow') {
-          matrixClient.sendHtmlNotice(room.roomId,
-            '',
-            `<b><a href="${config.fediverse.domain}/${events.data[0].account.id}">
-            ${events.data[0].account.acct}</a></b>
-          <font color="#03b381"><b>has followed you.</b></font>
-          <br><i>${events.data[0].account.note}</i>`);
-        } else if (events.data[0].type === 'favourite') {
-          matrixClient.sendHtmlNotice(room.roomId,
-            '',
-            `<b><a href="${config.fediverse.domain}/${events.data[0].account.id}">
-            ${events.data[0].account.acct}</a></b>
-          <font color="#03b381"><b>has <a href="${events.data[0].status.uri}">favorited</a>
-          your post:</b></font>
-          <br><blockquote><i><b>${events.data[0].status.content}</i></b></blockquote>`);
-        } else if (events.data[0].type === 'mention') {
-          matrixClient.sendHtmlNotice(room.roomId,
-            '',
-            `<b><a href="${config.fediverse.domain}/${events.data[0].account.id}">
-            ${events.data[0].account.acct}</a></b>
-          <font color="#03b381"><b>has <a href="${events.data[0].status.uri}">mentioned</a>
-          you:</b></font><br><blockquote><i><b>${events.data[0].status.content}
-          <br>(id: ${events.data[0].status.id}) ${registrar.media.visibilityEmoji(events.data[0].status.visibility)}</i></b>
-          </blockquote>`);
-        } else if (events.data[0].type === 'reblog') {
-          matrixClient.sendHtmlNotice(room.roomId,
-            '',
-            `<b><a href="${config.fediverse.domain}/${events.data[0].account.id}">
-            ${events.data[0].account.acct}</a></b>
-          <font color="#03b381"><b>has <a href="${events.data[0].status.uri}">repeated</a>
-          your post:</b></font><br>
-          <blockquote><i><b>${events.data[0].status.content}</i></b></blockquote>`);
+      headers: { Authorization: `Bearer ${fediverse.auth.access_token}` },
+    })
+      .then((res) => {
+        let past = JSON.parse(localStorage.getItem('notifications'));
+        if (past.length === 0) past = res.data;
+        const events = res.data;
+        const len = events.length;
+        for (let i = len - 1; i >= 0; i--) {
+          if (past.findIndex((x) => x.created_at === events[i].created_at) === -1) {
+            if (events[i].created_at < past.slice(18, 19)[0].created_at) return;
+            events[i].label = 'notifications';
+            fediverse.utils.formatter(events[i], roomId);
+          }
         }
-      }
-    });
-  }, 8000);
+        localStorage.setItem('notifications', JSON.stringify(events, null, 2));
+      })
+      .catch((e) => {
+        matrix.utils.sendError(null, roomId, e);
+      });
+  }, 30000);
 };

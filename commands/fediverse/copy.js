@@ -1,16 +1,14 @@
-exports.runQuery = function (matrixClient, room, userInput) {
+exports.runQuery = function (roomId, event, userInput) {
   axios({
     method: 'POST',
     url: `${config.fediverse.domain}/api/v1/statuses/${userInput}/reblog`,
-    headers: { Authorization: `Bearer ${fediverse_auth.access_token}` },
-  }).then((response) => {
-    matrixClient.sendHtmlNotice(room.roomId,
-      '',
-      `You have repeated:
-      <blockquote>${response.data.content}`);
+    headers: { Authorization: `Bearer ${fediverse.auth.access_token}` },
   })
+    .then(() => {
+      matrix.utils.addReact(event, '✅');
+    })
     .catch((e) => {
-      matrixClient.sendHtmlNotice(room.roomId,
-        '', `${e}`);
+      matrix.utils.addReact(event, '❌');
+      matrix.utils.sendError(event, roomId, e);
     });
 };

@@ -1,21 +1,19 @@
-const axios = require('axios');
-const fediverse_auth = JSON.parse(localStorage.getItem('fediverse_auth'));
-
-exports.runQuery = function (matrixClient, room, userInput) {
-  axios.get(`${config.fediverse.domain}/api/v1/accounts/${userInput}`).then((findUID) => {
-    axios({
-      method: 'POST',
-      url: `${config.fediverse.domain}/api/v1/accounts/${findUID.data.id}/follow`,
-      headers: { Authorization: `Bearer ${fediverse_auth.access_token}` },
-    })
-      .then((response) => {
-        matrixClient.sendHtmlNotice(room.roomId,
-          '',
-          `Subscribed:
-          <blockquote>${config.fediverse.domain}/${response.data.id}`);
-      });
-  }).catch((e) => {
-    matrixClient.sendHtmlNotice(room.roomId,
-      '', `${e}`);
+exports.runQuery = async function (roomId, event, userInput) {
+  const loadingString = `Searching for ${userInput}...`;
+  const original = await matrixClient.sendHtmlNotice(roomId, `${loadingString}`, `<code>${loadingString}</code>`);
+  const found = [];
+  const suggest = [];
+  axios({
+    method: 'GET',
+    url: `${config.fediverse.domain}/api/v2/search?q=${userInput}&type=accounts`,
+    headers: { Authorization: `Bearer ${fediverse.auth.access_token}` },
+  }).then((findUserId) => {
+    const results = findUserId.data.accounts;
+    const len = results.length;
+    for (let i = 0; i < len; i++) results[i].acct !== userInput ? suggest.push(results[i].acct) : found.push(results[i]);
+    if (found.length > 0) return fediverse.utils.follow(roomId, found, event, original);
+    if (suggest.length > 0) msg = `<code>${userInput} was not found, suggesting:</code><blockquote>${suggest.join('<br>')}</blockquote>`;
+    if (suggest.length === 0) msg = `<code>No results found for: ${userInput}.</code>`;
+    return matrix.utils.editNoticeHTML(roomId, original, msg);
   });
 };

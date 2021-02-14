@@ -1,15 +1,15 @@
-const { JSDOM } = require("jsdom");
+const { JSDOM } = require('jsdom');
 
 const headers = ({ domain, userAgent }) => ({
-  'Host': `${domain}`,
-  'User-Agent': `${userAgent}`
+  Host: `${domain}`,
+  'User-Agent': `${userAgent}`,
 });
 
 const nitter = async (instance, url) => {
   const req = await instance({ method: 'GET', url });
   if (req.statusText !== 'OK') throw req;
   const dom = new JSDOM(req.data);
-  const document = dom.window.document;
+  const { document } = dom.window;
   const tweet = document.querySelector('#m');
   const stats = tweet.querySelectorAll('.tweet-body > .tweet-stats .icon-container');
   const quote = tweet.querySelector('.tweet-body > .quote');
@@ -33,8 +33,8 @@ const nitter = async (instance, url) => {
     stats: {
       replies: stats[0].textContent.trim(),
       retweets: stats[1].textContent.trim(),
-      favorites: stats[2].textContent.trim()
-    }
+      favorites: stats[2].textContent.trim(),
+    },
   };
 };
 
@@ -49,24 +49,25 @@ const card = (tweet, base, check, path) =>
 (tweet.hasAttachments ? '<blockquote><b>This tweet has attached media.</b></blockquote>' : '') +
 (tweet.isReply ? tweet.isReply === 'unavailable' ? '<blockquote>Replied Tweet is unavailable</blockquote>' : `<blockquote><b><a href="${base}${tweet.isReply.path}">Replied Tweet</a></b><br /><b><i>${tweet.isReply.text.replace('\n', '<br />')}</i></b></blockquote>` : '') +
 (tweet.quote ? `<blockquote><b><a href="${base}${tweet.quote.path}">Quoted Tweet</a></b><br /><b><i>${tweet.quote.text.replace('\n', '<br />')}</i></b></blockquote>` : '');
-const run = async (matrixClient, { roomId }, userInput) => {
+
+const run = async (roomId, userInput) => {
   const instance = axios.create({
     baseURL: `https://${config.nitter.domain}`,
     headers: headers(config.nitter),
     transformResponse: [],
-    timeout: 10 * 1000
+    timeout: 10 * 1000,
   });
   const tweet = await nitter(instance, userInput);
   return await matrixClient.sendHtmlNotice(roomId, '', card(tweet, `https://${config.nitter.domain}`, config.nitter.check, userInput));
-}
+};
 
-exports.runQuery = async (client, room, userInput) => {
+exports.runQuery = async (roomId, event, userInput) => {
   try {
     const url = new URL(userInput);
-    if(!config.nitter.domains.includes(url.hostname)) throw '';
-    if(!/^\/[^/]+\/status\/\d+\/?$/.test(url.pathname)) throw '';
-    return await run(client, room, url.pathname);
-  } catch(e) {
-    return client.sendHtmlNotice(room.roomId, 'Sad!', `<strong>Sad!</strong>`).catch(()=>{});
+    if (!config.nitter.domains.includes(url.hostname)) throw '';
+    if (!/^\/[^/]+\/status\/\d+\/?$/.test(url.pathname)) throw '';
+    return await run(roomId, url.pathname);
+  } catch (e) {
+    return matrixClient.sendHtmlNotice(roomId, 'Sad!', '<strong>Sad!</strong>').catch(() => {});
   }
 };
