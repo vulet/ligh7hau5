@@ -96,9 +96,9 @@ module.exports.handleReact = async (event) => {
   if (!isMeta.includes(args[0])) return;
   let command = [];
   args.shift().toLowerCase();
-  if (reaction.key === '🔃') command = 'copy';
+  if (reaction.key === '🔁') command = 'copy';
   if (reaction.key === '👏') command = 'clap';
-  if (reaction.key === '🗑') command = 'redact';
+  if (reaction.key === '🗑️️') command = 'redact';
   eventHandler(args, roomId, command, event);
 };
 
@@ -123,9 +123,9 @@ module.exports.selfReact = async (event) => {
   const { meta } = event.getContent();
   if (!meta) return;
   const type = meta.split(' ')[0];
-  if (type === 'redact' || type === 'unreblog') addReact(event, '🗑️');
+  if (type === 'redact' || type === 'unreblog') addReact(event, '🗑️️');
   if (type === 'status' || type === 'reblog' || type === 'mention') {
-    addReact(event, '🔃');
+    addReact(event, '🔁');
     addReact(event, '👏');
   }
 };
