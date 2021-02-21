@@ -34,11 +34,11 @@ const notifyFormatter = (res, roomId) => {
       fediverse.auth.me !== res.account.url ? res.meta = 'favourite' : res.meta = 'redact';
       meta = `${res.meta} ${res.status.id}`;
       content = `${userDetails}
-       <font color="#03b381"><b>has <a href="${res.status.uri}">favorited</a>
+       <font color="#03b381"><b>has <a href="${config.fediverse.domain}/notice/${res.status.id}">favorited</a>
        your post:</font>
        <blockquote><i>${res.status.content}</i><br>
        ${hasAttachment(res)}
-       <br>(id: ${res.id}) ${registrar.post.visibilityEmoji(res.status.visibility)}
+       <br>(id: ${res.status.id}) ${registrar.post.visibilityEmoji(res.status.visibility)}
        </blockquote>`;
       sendEventWithMeta(roomId, content, res.meta);
       break;
@@ -46,10 +46,10 @@ const notifyFormatter = (res, roomId) => {
       fediverse.auth.me !== res.account.url ? res.meta = 'mention' : res.meta = 'redact';
       meta = `${res.meta} ${res.status.id}`;
       content = `${userDetails}
-       <font color="#03b381"><b>has <a href="${res.status.uri}">mentioned</a>
+       <font color="#03b381"><b>has <a href="${config.fediverse.domain}/notice/${res.status.id}">mentioned</a>
        you:</font><blockquote><i>${res.status.content}</i><br>
-           ${hasAttachment(res)}
-           <br>(id: ${res.id}) ${registrar.post.visibilityEmoji(res.status.visibility)}
+           ${hasAttachment(res.status.id)}
+           <br>(id: ${res.status.id}) ${registrar.post.visibilityEmoji(res.status.visibility)}
            </blockquote>`;
       sendEventWithMeta(roomId, content, meta);
       break;
@@ -57,10 +57,10 @@ const notifyFormatter = (res, roomId) => {
       fediverse.auth.me !== res.account.url ? res.meta = 'reblog' : res.meta = 'redact';
       meta = `${res.meta} ${res.status.id}`;
       content = `${userDetails}
-       <font color="#03b381"><b>has <a href="${res.status.uri}">repeated</a>
+       <font color="#03b381"><b>has <a href="${config.fediverse.domain}/notice/${res.status.id}">repeated</a>
        your post:</font><blockquote><i>${res.status.content}</i><br>
            ${hasAttachment(res)}
-           <br>(id: ${res.id}) ${registrar.post.visibilityEmoji(res.status.visibility)}
+           <br>(id: ${res.status.id}) ${registrar.post.visibilityEmoji(res.status.visibility)}
            </blockquote>`;
       sendEventWithMeta(roomId, content, meta);
       break;
@@ -71,7 +71,7 @@ const notifyFormatter = (res, roomId) => {
 
 const isOriginal = (res, roomId) => {
   if (res.data) res = res.data;
-  userDetails = `<b><a href="${config.fediverse.domain}/${res.account.id}">
+  userDetails = `<b><a href="${config.fediverse.domain}/notice/${res.id}">
   ${res.account.acct}</a>`;
   fediverse.auth.me !== res.account.url ? res.meta = 'status' : res.meta = 'redact';
   meta = `${res.meta} ${res.id}`;
@@ -85,13 +85,13 @@ const isOriginal = (res, roomId) => {
 
 const isReblog = (res, roomId) => {
   if (res.data) res = res.data;
-  userDetails = `<b><a href="${config.fediverse.domain}/${res.account.id}">
+  userDetails = `<b><a href="${config.fediverse.domain}/${res.id}">
   ${res.account.acct}</a>`;
   fediverse.auth.me !== res.account.url ? res.meta = 'status' : res.meta = 'unreblog';
   meta = `${res.meta} ${res.reblog.id}`;
   content = `${userDetails}
-   <font color="#7886D7"><b>has <a href="${res.reblog.uri}">repeated</a>
-   ${res.reblog.account.acct}'s post:</font>
+   <font color="#7886D7"><b>has repeated</a>
+   <a href="${config.fediverse.domain}/notice/${res.reblog.id}">${res.reblog.account.acct}</a>'s post:</font>
    <blockquote><i>${res.content}</i><br>
    ${hasAttachment(res)}
    <br>(id: ${res.reblog.id}) ${registrar.post.visibilityEmoji(res.visibility)}
