@@ -26,6 +26,7 @@ matrixClient.on('event', async (event) => {
 });
 
 matrixClient.on('Room.timeline', async (event, member, toStartOfTimeline) => {
+  matrixClient.setGlobalErrorOnUnknownDevices(config.matrix.manualVerify);
   if (toStartOfTimeline) return;
   if (event.isEncrypted()) await event._decryptionPromise;
   if (event.getType() !== 'm.room.message') return;
