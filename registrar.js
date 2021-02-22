@@ -36,6 +36,7 @@ module.exports = {
   flood: require('./commands/fediverse/flood.js'),
   follow: require('./commands/fediverse/follow.js'),
   help: require('./commands/help.js'),
+  makeitrain: require('./commands/fediverse/makeitrain.js'),
   mordy: require('./commands/fediverse/mordy.js'),
   notify: require('./commands/fediverse/notify.js'),
   pin: require('./commands/fediverse/pin.js'),

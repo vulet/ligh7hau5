@@ -12,6 +12,7 @@ module.exports = {
     password: '',
     client_name: 'ligh7hau5',
     subject: '',
+    tipping: false,
     mimetypes: {
       whitelist: [],
       blacklist: []

@@ -10,6 +10,7 @@ exports.runQuery = function (roomId) {
           + '+copy [post id] : repeat/repost/retweet<br>'
           + '+reply [post id] [content] : reply to post<br>'
           + '+tip [@user@fedi.url] [amount] : tip 10grans<br>'
+          + '+makeitrain [post id] : make it rain 10grans<br>'
           + '+beg : beg for 10grans<br>'
           + '+clap [post id] : favorite<br>'
           + '+boo [post id] : unfavorite</blockquote>'

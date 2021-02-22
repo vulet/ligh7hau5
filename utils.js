@@ -30,8 +30,8 @@ const eventHandler = (args, roomId, command, event) => {
     case 'help': case 'flood': case 'notify':
       args.push(roomId);
       break;
-    case 'tip':
-      args.push(roomId, address, flaggedInput);
+    case 'tip': case 'makeitrain':
+      args.push(roomId, event, address, flaggedInput);
       break;
     case 'archive': case 'rearchive':
       args.push(roomId, userInput, !!~command.indexOf('re'));
@@ -99,6 +99,7 @@ module.exports.handleReact = async (event) => {
   if (reaction.key === '🔁') command = 'copy';
   if (reaction.key === '👏') command = 'clap';
   if (reaction.key === '🗑️️') command = 'redact';
+  if (reaction.key === '🌧️') command = 'makeitrain';
   eventHandler(args, roomId, command, event);
 };
 
@@ -127,5 +128,6 @@ module.exports.selfReact = async (event) => {
   if (type === 'status' || type === 'reblog' || type === 'mention') {
     addReact(event, '🔁');
     addReact(event, '👏');
+    if (config.fediverse.tipping === true) addReact(event, '🌧️');
   }
 };

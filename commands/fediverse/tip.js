@@ -1,4 +1,5 @@
-exports.runQuery = function (roomId, address, flaggedInput, event) {
+exports.runQuery = function (roomId, event, address, flaggedInput) {
+  if (config.fediverse.tipping === false) return matrixClient.sendHtmlNotice(roomId, `Tipping is not enabled.`, `<code>Tipping is not enabled.</code>`);
   axios({
     method: 'POST',
     url: `${config.fediverse.domain}/api/v1/statuses`,
