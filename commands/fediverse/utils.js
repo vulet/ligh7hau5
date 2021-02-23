@@ -65,7 +65,7 @@ const notifyFormatter = (res, roomId) => {
       sendEventWithMeta(roomId, content, meta);
       break;
     default:
-      throw 'Unknown notification type.';
+      return console.log('Unknown notification type.');
   }
 };
 
