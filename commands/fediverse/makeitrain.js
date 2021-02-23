@@ -5,11 +5,11 @@ exports.runQuery = async function (roomId, event, notice) {
   const users = await fediverse.utils.getStatusMentions(notice, event, original);
   if (!users) return matrix.utils.editNoticeHTML(roomId, original, `<code>No eligible users found.</code>`);
   const rain = (users) => {
-    amount = users.length * 0.00000001337
-    if (users.length === 1) return amount * 10000
-    if (users.length <= 5) return amount * 1000
-    if (users.length <= 10) return amount * 100
-    if (users.length <= 100) return amount * 10
+    amount = users.length * 0.00000001337 // by per user:
+    if (users.length === 1) return amount * 100000 // 0.001337
+    if (users.length <= 5) return amount * 10000 // 0.0001337
+    if (users.length <= 10) return amount * 1000 // 0.00001337
+    if (users.length <= 100) return amount * 100 // 0.000001337
     return amount
   }
   axios({
