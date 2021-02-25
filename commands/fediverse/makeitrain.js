@@ -4,7 +4,7 @@ exports.runQuery = async function (roomId, event, notice) {
   const original = await matrixClient.sendHtmlNotice(roomId, `${loadingString}`, `<code>${loadingString}</code>`);
   const findAllUsers = await fediverse.utils.getStatusMentions(notice, event, original);
   const exclude = "@10grans@fedi.cc";
-  const users = users.filter(users => !exclude.includes(findAllUsers))
+  const users = findAllUsers.filter(users => !exclude.includes(findAllUsers))
   if (!users) return matrix.utils.editNoticeHTML(roomId, original, `<code>No eligible users found.</code>`);
   const rain = (users) => {
     amount = users.length * 0.00000001337 // by per user:
