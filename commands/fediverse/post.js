@@ -47,6 +47,7 @@ const run = async (roomId, content, replyId, mediaURL, subject) => {
     const media = await mediaDownload(mediaURL, config.fediverse.mimetypes);
     mediaId = await mediaUpload(config.fediverse, media);
   }
+  if (replyId) content = await fediverse.utils.getStatusMentions(replyId).then(m => m.concat(content));
   const response = await axios({
     method: 'POST',
     url: `${config.fediverse.domain}/api/v1/statuses`,

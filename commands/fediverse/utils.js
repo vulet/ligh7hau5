@@ -142,20 +142,19 @@ module.exports.unfollow = (roomId, account, event, original) => {
     });
 };
 
-module.exports.getStatusMentions = (notice, event, original) => {
-  const posters = [];
-  const prefix = '@';
+module.exports.getStatusMentions = (notice, event) => {
   const users = axios({
     method: 'GET',
     url: `${config.fediverse.domain}/api/v1/statuses/${notice}`,
     headers: { Authorization: `Bearer ${fediverse.auth.access_token}` },
   }).then((notice) => {
-    const citizens = [];
-    citizens.push(notice.data.account.acct);
-    for (let i = 0; i < notice.data.mentions.length; i++) citizens.push(notice.data.mentions[i].acct);
-    const filtered = citizens.filter(users => !config.fediverse.username.includes(users))
-    for (let i = 0; i < filtered.length; i++) posters.push(prefix.concat(filtered[i]));
-    return posters;
+    const users = [];
+    users.push('@' + notice.data.account.acct);
+    for(let i = 0; i < notice.data.mentions.length; i++) {
+      if(!config.fediverse.username.includes(notice.data.mentions[i].acct))
+        users.push('@' + notice.data.mentions[i].acct)
+    }
+    return users;
   })
   .catch((e) => {
     matrix.utils.addReact(event, '❌');
