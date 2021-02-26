@@ -1,6 +1,6 @@
 {
   "name": "ligh7hau5",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A Matrix to Fediverse client",
   "main": "main.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "axios": "^0.21.1",
     "form-data": "^3.0.0",
     "jsdom": "^16.4.0",
-    "matrix-js-sdk": "^9.5.1",
+    "matrix-js-sdk": "^9.7.0",
     "node-localstorage": "^2.1.6",
     "olm": "https://packages.matrix.org/npm/olm/olm-3.2.1.tgz",
     "qs": "^6.9.6"
