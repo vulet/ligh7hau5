@@ -1,6 +1,6 @@
 {
   "name": "ligh7hau5",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A Matrix to Fediverse client",
   "main": "main.js",
   "scripts": {
