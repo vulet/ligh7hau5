@@ -39,7 +39,7 @@ const eventHandler = (args, roomId, command, event) => {
       break;
     case 'post': case 'reply': case 'media': case 'mediareply':
     case 'random': case 'randomreply': case 'randommedia': case 'randommediareply':
-      args.push(roomId, userInput, {
+      args.push(roomId, event, userInput, {
         isReply: !!~command.indexOf('reply'),
         hasMedia: !!~command.indexOf('media'),
         hasSubject: !!~command.indexOf('random'),

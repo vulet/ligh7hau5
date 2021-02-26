@@ -41,13 +41,13 @@ const mediaUpload = async ({ domain }, { data, filename, mimetype }) => {
   return upload.data.id;
 };
 
-const run = async (roomId, content, replyId, mediaURL, subject) => {
+const run = async (roomId, event, content, replyId, mediaURL, subject) => {
   let mediaId = null;
   if (mediaURL) {
     const media = await mediaDownload(mediaURL, config.fediverse.mimetypes);
     mediaId = await mediaUpload(config.fediverse, media);
   }
-  if (replyId) content = await fediverse.utils.getStatusMentions(replyId).then(m => m.concat(content));
+  if (replyId) content = await fediverse.utils.getStatusMentions(replyId, event).then(m => m.concat(content).join(' '));
   const response = await axios({
     method: 'POST',
     url: `${config.fediverse.domain}/api/v1/statuses`,
@@ -63,7 +63,7 @@ const run = async (roomId, content, replyId, mediaURL, subject) => {
   return fediverse.utils.sendEventWithMeta(roomId, `<a href="${response.data.url}">${response.data.id}</a>`, `redact ${response.data.id}`);
 };
 
-exports.runQuery = async (roomId, userInput, { isReply, hasMedia, hasSubject }) => {
+exports.runQuery = async (roomId, event, userInput, { isReply, hasMedia, hasSubject }) => {
   try {
     const chunks = userInput.trim().split(' ');
     if (!chunks.length || chunks.length < !!isReply + !!hasMedia) throw '';
@@ -84,7 +84,7 @@ exports.runQuery = async (roomId, userInput, { isReply, hasMedia, hasSubject }) 
       if (!/^\/_matrix\/media\/r0\/download\/[^/]+\/[^/]+\/?$/.test(url.pathname)) throw '';
       mediaURL = url.toString();
     }
-    return await run(roomId, chunks.join(' '), replyId, mediaURL, subject);
+    return await run(roomId, event, chunks.join(' '), replyId, mediaURL, subject);
   } catch (e) {
     return matrixClient.sendHtmlNotice(roomId, 'Sad!', '<strong>Sad!</strong>').catch(() => {});
   }
