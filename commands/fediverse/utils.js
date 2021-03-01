@@ -48,7 +48,7 @@ const notifyFormatter = (res, roomId) => {
       content = `${userDetails}
        <font color="#03b381"><b>has <a href="${config.fediverse.domain}/notice/${res.status.id}">mentioned</a>
        you:</font><blockquote><i>${res.status.content}</i><br>
-           ${hasAttachment(res.status.id)}
+           ${hasAttachment(res)}
            <br>(id: ${res.status.id}) ${registrar.post.visibilityEmoji(res.status.visibility)}
            </blockquote>`;
       sendEventWithMeta(roomId, content, meta);
