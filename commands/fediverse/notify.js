@@ -12,7 +12,8 @@ exports.runQuery = function (roomId) {
         const len = events.length;
         for (let i = len - 1; i >= 0; i--) {
           if (past.findIndex((x) => x.created_at === events[i].created_at) === -1) {
-            if (events[i].created_at < past.slice(18, 19)[0].created_at) return;
+            const lastStored = past.slice(past.length - 1, past.length);
+            if (events[i].created_at < lastStored[0].created_at) return;
             events[i].label = 'notifications';
             fediverse.utils.formatter(events[i], roomId);
           }
