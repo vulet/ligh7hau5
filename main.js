@@ -18,6 +18,7 @@ matrixClient.on('RoomMember.membership', (event, member) => {
 });
 
 matrixClient.on('event', async (event) => {
+  if (event.isEncrypted()) await event._decryptionPromise;
   if (event.getSender() === matrixClient.credentials.userId) return matrix.utils.selfReact(event);
   if (!event.getContent()['m.relates_to']) return;
   if (event.event.unsigned.age > 10000) return;
