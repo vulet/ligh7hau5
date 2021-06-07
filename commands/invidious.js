@@ -6,8 +6,10 @@ const headers = ({ domain, userAgent }) => ({
 const invidious = async (instance, url) => {
   const req = await instance({ method: 'GET', url });
   if (req.statusText !== 'OK') throw req;
+  const { headers } = instance.defaults;
   const video = JSON.parse(req.data);
   return {
+    url: headers['Host'],
     name: video.title,
     date: video.publishedText,
     description: video.descriptionHtml,
@@ -18,8 +20,8 @@ const invidious = async (instance, url) => {
   };
 };
 
-const card = (video, base, path) =>
-`<a href="${base}/${path}"><b>${video.name}</a></b><blockquote><b><i>` +
+const card = (video, path) =>
+`<a href="https://${video.url}/${path}"><b>${video.name}</a></b><blockquote><b><i>` +
 ((video.description.length > 300) ? `${video.description.substr(0, 300)}&hellip;` : ``)+
 ((video.description === '<p></p>') ? `No description.`: ``)+
 ((video.description.length < 300 && video.description !== '<p></p>') ? `${video.description}` : ``)+
@@ -29,16 +31,19 @@ const card = (video, base, path) =>
 `<br />(${video.date})</b> <br />
  </blockquote>`;
 
-const run = async (roomId, userInput) => {
-  const instance = axios.create({
-    baseURL: `https://${config.invidious.domain}/api/v1/videos/`,
-    headers: headers(config.invidious),
-    transformResponse: [],
-    timeout: 10 * 1000,
-  });
-  const video = await invidious(instance, userInput);
-  return await matrixClient.sendHtmlNotice(roomId, '', card(video, `https://${config.invidious.domain}`, userInput));
-};
+ const getInstance = config =>
+   axios.create({
+     baseURL: `https://${config.domain}/api/v1/videos`,
+     headers: headers(config),
+     transformResponse: [],
+     timeout: 10 * 1000,
+   });
+
+ const run = async (roomId, userInput) => {
+   const video = await invidious(getInstance(config.invidious), userInput)
+     .catch(_ => invidious(getInstance(Object.assign(config.invidious, { domain: config.invidious.fallback })), userInput));
+   return matrixClient.sendHtmlNotice(roomId, '', card(video, userInput));
+ };
 
 exports.runQuery = async (roomId, event, userInput) => {
   try {
