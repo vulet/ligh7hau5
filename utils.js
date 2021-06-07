@@ -46,7 +46,7 @@ const eventHandler = (args, roomId, command, event) => {
       });
       command = 'post';
       break;
-    case 'proxy':
+    case 'proxy': case 'p':
       try {
         const url = new URL(userInput);
         command = config.invidious.domains.includes(url.hostname)
