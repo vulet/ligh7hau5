@@ -27,6 +27,10 @@ const nitter = async (instance, url) => {
       path: replies[replies.length - 1].querySelector('a.tweet-link').href,
       text: replies[replies.length - 1].querySelector('.tweet-content').innerHTML,
     } : null,
+    isThread: !isReply && replies.length > 0 ? replies[replies.length - 1].classList.contains('unavailable') ? 'unavailable' : {
+      path: replies[replies.length - 1].querySelector('a.tweet-link').href,
+      text: replies[replies.length - 1].querySelector('.tweet-content').innerHTML,
+    } : null,
     stats: {
       replies: stats[0].textContent.trim(),
       retweets: stats[1].textContent.trim(),
@@ -45,6 +49,7 @@ const card = (tweet, check, path) =>
 `<br /><blockquote><b><i>${tweet.text.replace('\n', '<br />')}</i></b></blockquote>` +
 (tweet.hasAttachments ? '<blockquote><b>This tweet has attached media.</b></blockquote>' : '') +
 (tweet.isReply ? tweet.isReply === 'unavailable' ? '<blockquote>Replied Tweet is unavailable</blockquote>' : `<blockquote><b><a href="${tweet.url}${tweet.isReply.path}">Replied Tweet</a></b><br /><b><i>${tweet.isReply.text.replace('\n', '<br />')}</i></b></blockquote>` : '') +
+(tweet.isThread ? tweet.isThread === 'unavailable' ? '<blockquote>Previous Tweet is unavailable</blockquote>' : `<blockquote><b><a href="${tweet.url}${tweet.isThread.path}">Previous Tweet</a></b><br /><b><i>${tweet.isThread.text.replace('\n', '<br />')}</i></b></blockquote>` : '') +
 (tweet.quote ? `<blockquote><b><a href="${tweet.url}${tweet.quote.path}">Quoted Tweet</a></b><br /><b><i>${tweet.quote.text.replace('\n', '<br />')}</i></b></blockquote>` : '');
 
 const getInstance = (domain, config) =>

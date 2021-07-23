@@ -27,6 +27,7 @@ global.matrix = {
 module.exports = {
   config: require('./config.js'),
   archive: require('./commands/archive.js'),
+  proxy: require('./commands/proxy.js'),
   invidious: require('./commands/invidious.js'),
   nitter: require('./commands/nitter.js'),
   beg: require('./commands/fediverse/beg.js'),
