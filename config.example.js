@@ -23,16 +23,18 @@ module.exports = {
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)'
   },
   nitter: {
-    domain: 'nitter.fdn.fr',
-    fallback: 'nitter.snopyta.org',
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
-    domains: [ 'nitter.snopyta.org', 'nitter.net', 'www.nitter.net', 'twitter.com', 'www.twitter.com', 'mobile.twitter.com', 'm.twitter.com', 'nitter.fdn.fr' ],
-    check: '(✅)'
+    domains: {
+      redirect: [ 'nitter.fdn.fr', 'nitter.snopyta.org', 'nitter.net' ],
+      original:  [ 'nitter.net', 'www.nitter.net', 'twitter.com', 'www.twitter.com', 'mobile.twitter.com', 'm.twitter.com' ]
+    },
+    check: '(✅)',
   },
   invidious: {
-    domain: 'invidious.fdn.fr',
-    fallback: 'invidious.snopyta.org',
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
-    domains: [ 'invidious.snopyta.org', 'invidious.xyz', 'youtube.com', 'www.youtube.com', 'youtu.be', 'm.youtube.com', 'invidious.fdn.fr' ]
+    domains: {
+      redirect: [ 'invidious.fdn.fr', 'invidious.snopyta.org', 'invidious.xyz', 'inv.riverside.rocks', 'vid.puffyan.us', 'y.com.cm' ],
+      original:  [ 'youtube.com', 'www.youtube.com', 'youtu.be', 'm.youtube.com' ]
+    }
   }
 };

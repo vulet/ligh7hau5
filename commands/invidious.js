@@ -1,8 +1,3 @@
-const headers = ({ domain, userAgent }) => ({
-  Host: `${domain}`,
-  'User-Agent': `${userAgent}`,
-});
-
 const invidious = async (instance, url) => {
   const req = await instance({ method: 'GET', url });
   if (req.statusText !== 'OK') throw req;
@@ -31,24 +26,28 @@ const card = (video, path) =>
 `<br />(${video.date})</b> <br />
  </blockquote>`;
 
- const getInstance = config =>
-   axios.create({
-     baseURL: `https://${config.domain}/api/v1/videos`,
-     headers: headers(config),
-     transformResponse: [],
-     timeout: 10 * 1000,
-   });
+const getInstance = (domain, config) =>
+  axios.create({
+    baseURL: `https://${domain}/api/v1/videos`,
+    headers: {
+      Host: `${domain}`,
+      'User-Agent': `${config.userAgent}`,
+    },
+    transformResponse: [],
+    timeout: 10 * 1000,
+  });
 
- const run = async (roomId, userInput) => {
-   const video = await invidious(getInstance(config.invidious), userInput)
-     .catch(_ => invidious(getInstance(Object.assign(config.invidious, { domain: config.invidious.fallback })), userInput));
-   return matrixClient.sendHtmlNotice(roomId, '', card(video, userInput));
- };
+const run = async (roomId, userInput) => {
+  const cfg = config.invidious;
+  const video = await matrix.utils.retryPromise(cfg.domains.redirect, domain => invidious(getInstance(domain, cfg), userInput));
+  return matrixClient.sendHtmlNotice(roomId, '', card(video, userInput));
+};
 
 exports.runQuery = async (roomId, event, userInput) => {
   try {
     const url = new URL(userInput);
-    if (!config.invidious.domains.includes(url.hostname)) throw '';
+    const { redirect, original } = config.invidious.domains;
+    if (!redirect.includes(url.hostname) && !original.includes(url.hostname)) throw '';
     if (/^\/[\w-]{11}$/.test(url.pathname)) return await run(roomId, url.pathname.slice(1));
     const params = new URLSearchParams(url.search).get('v');
     if (!/^[\w-]{11}$/.test(params)) throw '';

@@ -1,10 +1,5 @@
 const { JSDOM } = require('jsdom');
 
-const headers = ({ domain, userAgent }) => ({
-  Host: `${domain}`,
-  'User-Agent': `${userAgent}`,
-});
-
 const nitter = async (instance, url) => {
   const req = await instance({ method: 'GET', url });
   if (req.statusText !== 'OK') throw req;
@@ -52,24 +47,28 @@ const card = (tweet, check, path) =>
 (tweet.isReply ? tweet.isReply === 'unavailable' ? '<blockquote>Replied Tweet is unavailable</blockquote>' : `<blockquote><b><a href="${tweet.url}${tweet.isReply.path}">Replied Tweet</a></b><br /><b><i>${tweet.isReply.text.replace('\n', '<br />')}</i></b></blockquote>` : '') +
 (tweet.quote ? `<blockquote><b><a href="${tweet.url}${tweet.quote.path}">Quoted Tweet</a></b><br /><b><i>${tweet.quote.text.replace('\n', '<br />')}</i></b></blockquote>` : '');
 
-const getInstance = config =>
+const getInstance = (domain, config) =>
   axios.create({
-    baseURL: `https://${config.domain}`,
-    headers: headers(config),
+    baseURL: `https://${domain}`,
+    headers: {
+      Host: `${domain}`,
+      'User-Agent': `${config.userAgent}`,
+    },
     transformResponse: [],
     timeout: 10 * 1000,
   });
 
 const run = async (roomId, userInput) => {
-  const tweet = await nitter(getInstance(config.nitter), userInput)
-    .catch(_ => nitter(getInstance(Object.assign(config.nitter, { domain: config.nitter.fallback })), userInput));
-  return matrixClient.sendHtmlNotice(roomId, '', card(tweet, config.nitter.check, userInput));
+  const cfg = config.nitter;
+  const tweet = await matrix.utils.retryPromise(cfg.domains.redirect, domain => nitter(getInstance(domain, cfg), userInput));
+  return matrixClient.sendHtmlNotice(roomId, '', card(tweet, cfg.check, userInput));
 };
 
 exports.runQuery = async (roomId, event, userInput) => {
   try {
     const url = new URL(userInput);
-    if (!config.nitter.domains.includes(url.hostname)) throw '';
+    const { redirect, original } = config.nitter.domains;
+    if (!redirect.includes(url.hostname) && !original.includes(url.hostname)) throw '';
     if (!/^\/[^/]+\/status\/\d+\/?$/.test(url.pathname)) throw '';
     return await run(roomId, url.pathname);
   } catch (e) {

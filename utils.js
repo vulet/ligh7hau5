@@ -49,9 +49,11 @@ const eventHandler = (args, roomId, command, event) => {
     case 'proxy': case 'p':
       try {
         const url = new URL(userInput);
-        command = config.invidious.domains.includes(url.hostname)
+        const invidio = config.invidious.domains;
+        const nitter = config.nitter.domains;
+        command = invidio.redirect.includes(url.hostname) || invidio.original.includes(url.hostname)
           ? 'invidious'
-          : config.nitter.domains.includes(url.hostname)
+          : nitter.redirect.includes(url.hostname) || nitter.original.includes(url.hostname)
             ? 'nitter'
             : 'proxy';
       } catch (e) { sendError(event, roomId, e); }
@@ -130,4 +132,14 @@ module.exports.selfReact = async (event) => {
     addReact(event, '👏');
     if (config.fediverse.tipping === true) addReact(event, '🌧️');
   }
+};
+
+module.exports.retryPromise = async (argList, promiseFn) => {
+  let err;
+  for(var arg of argList) {
+    try {
+      return await promiseFn(arg);
+    } catch(e) { err = e; }
+  }
+  throw err || new Error('retryPromise error');
 };
