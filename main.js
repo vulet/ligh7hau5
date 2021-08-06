@@ -18,7 +18,7 @@ matrixClient.on('RoomMember.membership', (event, member) => {
 });
 
 matrixClient.on('event', async (event) => {
-  if (event.isEncrypted()) await event._decryptionPromise;
+  if (event.isEncrypted()) await matrixClient.decryptEventIfNeeded(event, { emit: false, isRetry: false });
   if (event.getSender() === matrixClient.credentials.userId) return matrix.utils.selfReact(event);
   if (!event.getContent()['m.relates_to']) return;
   if (event.event.unsigned.age > 10000) return;
@@ -27,9 +27,8 @@ matrixClient.on('event', async (event) => {
 });
 
 matrixClient.on('Room.timeline', async (event, member, toStartOfTimeline) => {
-  matrixClient.setGlobalErrorOnUnknownDevices(config.matrix.manualVerify);
   if (toStartOfTimeline) return;
-  if (event.isEncrypted()) await event._decryptionPromise;
+  if (event.isEncrypted()) await matrixClient.decryptEventIfNeeded(event, { emit: false, isRetry: false });
   if (event.getType() !== 'm.room.message') return;
   if (event.getSender() === matrixClient.credentials.userId) return;
   if (event.event.unsigned.age > 10000) return;

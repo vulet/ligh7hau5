@@ -18,6 +18,7 @@ const matrixTokenLogin = async () => {
           + '====================================================',
         );
       }
+      matrixClient.setGlobalErrorOnUnknownDevices(config.matrix.manualVerify);
       matrixClient.startClient();
     });
 };

@@ -1,3 +1,5 @@
+const { MatrixEvent } = require('matrix-js-sdk/lib/models/event');
+
 const sendError = async (event, roomId, e) => {
   e.response ? error = `Error(${e.response.status}): ${e.response.data.error}`
     : e.data ? error = `Error(${e.errcode}): ${e.data.error}`
@@ -64,11 +66,27 @@ const eventHandler = (args, roomId, command, event) => {
   registrar[command] && registrar[command].runQuery.apply(null, args);
 };
 
+/**
+matrixClient.fetchRoomEvent() does not return an Event class
+however, this class is necessary for decryption, so reinstate it.
+afterwards, decrypt.
+*/
+const fetchEncryptedOrNot = async (roomId, event) => {
+  const fetchedEvent = await matrixClient.fetchRoomEvent(roomId, event.event_id)
+  const realEvent = new MatrixEvent(fetchedEvent);
+  if (realEvent.isEncrypted()) {
+    await matrixClient.decryptEventIfNeeded(realEvent, { emit: false, isRetry: false });
+  }
+  return realEvent;
+}
+
 module.exports.sendError = sendError;
 
 module.exports.addReact = addReact;
 
 module.exports.eventHandler = eventHandler;
+
+module.exports.fetchEncryptedOrNot = fetchEncryptedOrNot
 
 module.exports.editNoticeHTML = (roomId, event, html, plain) => matrixClient.sendMessage(roomId, {
   body: ` * ${plain || html.replace(/<[^<]+?>/g, '')}`,
@@ -89,11 +107,11 @@ module.exports.editNoticeHTML = (roomId, event, html, plain) => matrixClient.sen
 
 module.exports.handleReact = async (event) => {
   const roomId = event.event.room_id;
+  if (!event.getContent()['m.relates_to']) return;
   const reaction = event.getContent()['m.relates_to'];
-  if (!reaction) return;
-  const metaEvent = await matrixClient.fetchRoomEvent(roomId, reaction.event_id);
-  if (!metaEvent.content.meta || metaEvent.sender !== config.matrix.user) return;
-  const args = metaEvent.content.meta.split(' ');
+  const metaEvent = await fetchEncryptedOrNot(roomId, reaction);
+  if (!metaEvent.getContent().meta || metaEvent.sender !== config.matrix.user) return;
+  const args = metaEvent.getContent().meta.split(' ');
   isMeta = ['status', 'reblog', 'mention', 'redact', 'unreblog'];
   if (!isMeta.includes(args[0])) return;
   let command = [];
@@ -107,10 +125,10 @@ module.exports.handleReact = async (event) => {
 
 module.exports.handleReply = async (event) => {
   const roomId = event.event.room_id;
+  if(!event.getContent()['m.relates_to']['m.in_reply_to']) return;
   const reply = event.getContent()['m.relates_to']['m.in_reply_to'];
-  if (!reply) return;
-  const metaEvent = await matrixClient.fetchRoomEvent(roomId, reply.event_id);
-  if (!metaEvent.content.meta || metaEvent.sender !== config.matrix.user) return;
+  const metaEvent = await fetchEncryptedOrNot(roomId, reply);
+  if (!metaEvent.getContent().meta || metaEvent.sender !== config.matrix.user) return;
   const args = metaEvent.content.meta.split(' ');
   args.push(event.event.content.formatted_body.trim().split('</mx-reply>')[1]);
   isMeta = ['status', 'reblog', 'mention', 'redact', 'unreblog'];
@@ -123,8 +141,8 @@ module.exports.handleReply = async (event) => {
 module.exports.selfReact = async (event) => {
   if (event.getType() !== 'm.room.message') return;
   if (event.event.unsigned.age > 10000) return;
+  if (!event.getContent().meta) return;
   const { meta } = event.getContent();
-  if (!meta) return;
   const type = meta.split(' ')[0];
   if (type === 'redact' || type === 'unreblog') addReact(event, '🗑️️');
   if (type === 'status' || type === 'reblog' || type === 'mention') {
