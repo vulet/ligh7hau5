@@ -1,5 +1,6 @@
 const { JSDOM } = require('jsdom');
 const qs = require('qs');
+const https = require('https');
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -35,6 +36,7 @@ const arc3Str = str => `<em>Timed out <code>${str}</code></em>`;
 const run = async (roomId, userInput, rearchive) => {
   const instance = axios.create({
     baseURL: `https://${config.archive.domain}`,
+    httpsAgent: https.Agent({ maxVersion: "TLSv1.2"}),
     headers: headers(config.archive),
     transformResponse: [],
     timeout: 10 * 1000
