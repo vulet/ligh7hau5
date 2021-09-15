@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/vulet/lighthau5#readme",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "form-data": "^3.0.0",
     "jsdom": "^16.6.0",
     "matrix-js-sdk": "^12.4.1",
