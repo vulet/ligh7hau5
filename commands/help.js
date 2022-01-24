@@ -17,6 +17,8 @@ exports.runQuery = function (roomId) {
           + '<blockquote><b>channel commands<br>'
           + '+flood : turn on timeline in channel<br>'
           + '+notify : show notifications in channel<br>'
+          + '+unflood : stop timeline in channel<br>'
+          + '+unnotify : stop notifications in channel<br>'
           + '+archive [URL] : archive content<br>'
           + '+rearchive [URL] : re-archive content<br>'
           + '+nitter [status URL] : redirect twitter to nitter, also embed tweet<br>'

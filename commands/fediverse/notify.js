@@ -1,5 +1,15 @@
-exports.runQuery = function (roomId) {
-  setInterval(() => {
+let intervalId = null;
+
+exports.runQuery = function (roomId, disable) {
+
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+
+  if (disable) return;
+
+  intervalId = setInterval(() => {
     axios({
       method: 'GET',
       url: `${config.fediverse.domain}/api/v1/notifications`,

@@ -32,6 +32,10 @@ const eventHandler = (args, roomId, command, event) => {
     case 'help': case 'flood': case 'notify':
       args.push(roomId);
       break;
+    case 'unflood': case 'unnotify':
+      args.push(roomId, true);
+      command = command.substring(2);
+      break;
     case 'tip': case 'makeitrain':
       args.push(roomId, event, address, flaggedInput);
       break;
@@ -110,7 +114,7 @@ module.exports.handleReact = async (event) => {
   if (!event.getContent()['m.relates_to']) return;
   const reaction = event.getContent()['m.relates_to'];
   const metaEvent = await fetchEncryptedOrNot(roomId, reaction);
-  if (!metaEvent.getContent().meta || metaEvent.sender !== config.matrix.user) return;
+  if (!metaEvent.getContent().meta || metaEvent.event.sender !== config.matrix.user) return;
   const args = metaEvent.getContent().meta.split(' ');
   isMeta = ['status', 'reblog', 'mention', 'redact', 'unreblog'];
   if (!isMeta.includes(args[0])) return;
@@ -128,7 +132,7 @@ module.exports.handleReply = async (event) => {
   if(!event.getContent()['m.relates_to']['m.in_reply_to']) return;
   const reply = event.getContent()['m.relates_to']['m.in_reply_to'];
   const metaEvent = await fetchEncryptedOrNot(roomId, reply);
-  if (!metaEvent.getContent().meta || metaEvent.sender !== config.matrix.user) return;
+  if (!metaEvent.getContent().meta || metaEvent.event.sender !== config.matrix.user) return;
   const args = metaEvent.content.meta.split(' ');
   args.push(event.event.content.formatted_body.trim().split('</mx-reply>')[1]);
   isMeta = ['status', 'reblog', 'mention', 'redact', 'unreblog'];
