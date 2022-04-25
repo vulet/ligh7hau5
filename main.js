@@ -20,7 +20,7 @@ matrixClient.on('RoomMember.membership', (event, member) => {
 matrixClient.on('event', async (event) => {
   if (event.isEncrypted()) await matrixClient.decryptEventIfNeeded(event, { emit: false, isRetry: false });
   if (event.getSender() === matrixClient.credentials.userId) return matrix.utils.selfReact(event);
-  if (!event.getContent()['m.relates_to']) return;
+  if (!event.event.content['m.relates_to']) return;
   if (event.event.unsigned.age > 10000) return;
   return event.getType() === 'm.room.message'
     ? matrix.utils.handleReply(event) : matrix.utils.handleReact(event);

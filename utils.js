@@ -129,12 +129,12 @@ module.exports.handleReact = async (event) => {
 
 module.exports.handleReply = async (event) => {
   const roomId = event.event.room_id;
-  if(!event.getContent()['m.relates_to']['m.in_reply_to']) return;
-  const reply = event.getContent()['m.relates_to']['m.in_reply_to'];
+  if(!event.event.content['m.relates_to']['m.in_reply_to']) return;
+  const reply = event.event.content['m.relates_to']['m.in_reply_to'];
   const metaEvent = await fetchEncryptedOrNot(roomId, reply);
   if (!metaEvent.getContent().meta || metaEvent.event.sender !== config.matrix.user) return;
-  const args = metaEvent.content.meta.split(' ');
-  args.push(event.event.content.formatted_body.trim().split('</mx-reply>')[1]);
+  const args = metaEvent.getContent().meta.split(' ');
+  args.push(event.getContent().formatted_body.trim().split('</mx-reply>')[1]);
   isMeta = ['status', 'reblog', 'mention', 'redact', 'unreblog'];
   if (!isMeta.includes(args[0])) return;
   args.shift().toLowerCase();
