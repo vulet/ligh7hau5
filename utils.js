@@ -5,7 +5,7 @@ const sendError = async (event, roomId, e) => {
     : e.data ? error = `Error(${e.errcode}): ${e.data.error}`
       : error = `Error: ${e.syscall}, ${e.code}`;
   return matrixClient.sendHtmlNotice(roomId,
-    '', error);
+    ' ', error);
 };
 
 const addReact = async (event, key) => {
@@ -124,6 +124,7 @@ module.exports.handleReact = async (event) => {
   if (reaction.key === '👏') command = 'clap';
   if (reaction.key === '🗑️️') command = 'redact';
   if (reaction.key === '🌧️') command = 'makeitrain';
+  if (reaction.key === '➕') command = 'unroll';
   eventHandler(args, roomId, command, event);
 };
 
@@ -150,6 +151,7 @@ module.exports.selfReact = async (event) => {
   const type = meta.split(' ')[0];
   if (type === 'redact' || type === 'unreblog') addReact(event, '🗑️️');
   if (type === 'status' || type === 'reblog' || type === 'mention') {
+    addReact(event, '➕');
     addReact(event, '🔁');
     addReact(event, '👏');
     if (config.fediverse.tipping === true) addReact(event, '🌧️');

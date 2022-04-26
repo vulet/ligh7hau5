@@ -66,7 +66,7 @@ const getInstance = (domain, config) =>
 const run = async (roomId, userInput) => {
   const cfg = config.nitter;
   const tweet = await matrix.utils.retryPromise(cfg.domains.redirect, domain => nitter(getInstance(domain, cfg), userInput));
-  return matrixClient.sendHtmlNotice(roomId, '', card(tweet, cfg.check, userInput));
+  return matrixClient.sendHtmlNotice(roomId, ' ', card(tweet, cfg.check, userInput));
 };
 
 exports.runQuery = async (roomId, event, userInput) => {

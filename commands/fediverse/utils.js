@@ -8,6 +8,20 @@ const sendEventWithMeta = async (roomId, content, meta) => {
   });
 };
 
+const thread = async (roomId, event, content, meta) => {
+  await matrixClient.sendEvent(roomId, 'm.room.message', {
+    body: content.replace(/<[^<]+?>/g, ''),
+    msgtype: 'm.notice',
+    formatted_body: content,
+    meta: meta,
+    format: 'org.matrix.custom.html',
+    'm.relates_to': {
+      rel_type: 'm.thread',
+      event_id: event['event']['content']['m.relates_to']['event_id'],
+    },
+  })
+};
+
 const hasAttachment = (res) => {
   if (res.status) res = res.status;
   if (!res.media_attachments) return '<br>';
@@ -69,7 +83,7 @@ const notifyFormatter = (res, roomId) => {
   }
 };
 
-const isOriginal = (res, roomId) => {
+const isOriginal = (res, roomId, event) => {
   if (res.data) res = res.data;
   userDetails = `<b><a href="${config.fediverse.domain}/notice/${res.id}">
   ${res.account.acct}</a>`;
@@ -80,7 +94,8 @@ const isOriginal = (res, roomId) => {
     ${hasAttachment(res)}
     <br>(id: ${res.id}) ${registrar.post.visibilityEmoji(res.visibility)}
     </blockquote>`;
-  sendEventWithMeta(roomId, content, meta);
+  if (res.label == 'thread') thread(roomId, event, content, meta);
+  else sendEventWithMeta(roomId, content, meta);
 };
 
 const isReblog = (res, roomId) => {
@@ -101,11 +116,13 @@ const isReblog = (res, roomId) => {
 
 module.exports.sendEventWithMeta = sendEventWithMeta;
 
-module.exports.formatter = (res, roomId) => {
+module.exports.thread = thread;
+
+module.exports.formatter = (res, roomId, event) => {
   const filtered = (res.label === 'notifications')
     ? notifyFormatter(res, roomId)
     : (res.reblog == null)
-      ? isOriginal(res, roomId)
+      ? isOriginal(res, roomId, event)
       : isReblog(res, roomId);
   return filtered;
 };

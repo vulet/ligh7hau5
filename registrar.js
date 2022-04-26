@@ -47,5 +47,6 @@ module.exports = {
   tip: require('./commands/fediverse/tip.js'),
   unfollow: require('./commands/fediverse/unfollow.js'),
   unpin: require('./commands/fediverse/unpin.js'),
-  unreblog: require('./commands/fediverse/unreblog.js')
+  unreblog: require('./commands/fediverse/unreblog.js'),
+  unroll: require('./commands/fediverse/unroll.js')
 };

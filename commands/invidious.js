@@ -40,7 +40,7 @@ const getInstance = (domain, config) =>
 const run = async (roomId, userInput) => {
   const cfg = config.invidious;
   const video = await matrix.utils.retryPromise(cfg.domains.redirect, domain => invidious(getInstance(domain, cfg), userInput));
-  return matrixClient.sendHtmlNotice(roomId, '', card(video, userInput));
+  return matrixClient.sendHtmlNotice(roomId, ' ', card(video, userInput));
 };
 
 exports.runQuery = async (roomId, event, userInput) => {

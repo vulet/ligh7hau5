@@ -1,6 +1,6 @@
 exports.runQuery = function (roomId) {
   matrixClient.sendHtmlNotice(roomId,
-    '',
+    ' ',
     '<blockquote><b>fediverse commands<br>'
           + '+post [your message] : post<br>'
           + '+redact [post id] : delete post<br>'

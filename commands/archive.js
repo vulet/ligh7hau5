@@ -44,7 +44,7 @@ const run = async (roomId, userInput, rearchive) => {
 
   let reply = null;
   try {
-    reply = await matrixClient.sendHtmlNotice(roomId, '', reqStr(userInput));
+    reply = await matrixClient.sendHtmlNotice(roomId, ' ', reqStr(userInput));
     const { refresh, id, title, date } = await archive(instance, userInput, rearchive);
     if (id)
       return await matrix.utils.editNoticeHTML(roomId, reply, arc2Str(`${config.archive.domain}${id}`, title, date));
