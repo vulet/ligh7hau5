@@ -1,5 +1,7 @@
 const { MatrixEvent } = require('matrix-js-sdk/lib/models/event');
 
+const isEmoji = string => true;
+
 const sendError = async (event, roomId, e) => {
   e.response ? error = `Error(${e.response.status}): ${e.response.data.error}`
     : e.data ? error = `Error(${e.errcode}): ${e.data.error}`
@@ -25,6 +27,7 @@ const eventHandler = (args, roomId, command, event) => {
   const address = args.slice(0, 1).join(' ').replace(/"/g, '');
 
   args = [];
+  let visibility = null;
 
   switch (command) {
     case 'config':
@@ -36,6 +39,10 @@ const eventHandler = (args, roomId, command, event) => {
       args.push(roomId, true);
       command = command.substring(2);
       break;
+    case 'unreact':
+      args.push(roomId, event, userInput, true);
+      command = 'react';
+      break;
     case 'tip': case 'makeitrain':
       args.push(roomId, event, address, flaggedInput);
       break;
@@ -45,10 +52,15 @@ const eventHandler = (args, roomId, command, event) => {
       break;
     case 'post': case 'reply': case 'media': case 'mediareply':
     case 'random': case 'randomreply': case 'randommedia': case 'randommediareply':
+    case 'direct': case 'directreply': case 'directmedia': case 'directmediareply':
+    case 'private': case 'privatereply': case 'privatemedia': case 'privatemediareply':
+    case 'unlisted': case 'unlistedreply': case 'unlistedmedia': case 'unlistedmediareply':
+      visibility = command.match(/^(direct|private|unlisted)/);
       args.push(roomId, event, userInput, {
         isReply: !!~command.indexOf('reply'),
         hasMedia: !!~command.indexOf('media'),
         hasSubject: !!~command.indexOf('random'),
+        visibility: visibility ? visibility[1] : null
       });
       command = 'post';
       break;
@@ -110,21 +122,34 @@ module.exports.editNoticeHTML = (roomId, event, html, plain) => matrixClient.sen
 });
 
 module.exports.handleReact = async (event) => {
+  const reactions = config.matrix.reactions;
   const roomId = event.event.room_id;
   if (!event.getContent()['m.relates_to']) return;
   const reaction = event.getContent()['m.relates_to'];
   const metaEvent = await fetchEncryptedOrNot(roomId, reaction);
   if (!metaEvent.getContent().meta || metaEvent.event.sender !== config.matrix.user) return;
-  const args = metaEvent.getContent().meta.split(' ');
+  let args = metaEvent.getContent().meta.split(' ');
   isMeta = ['status', 'reblog', 'mention', 'redact', 'unreblog'];
   if (!isMeta.includes(args[0])) return;
   let command = [];
   args.shift().toLowerCase();
-  if (reaction.key === '🔁') command = 'copy';
-  if (reaction.key === '👏') command = 'clap';
-  if (reaction.key === '🗑️️') command = 'redact';
-  if (reaction.key === '🌧️') command = 'makeitrain';
-  if (reaction.key === '➕') command = 'unroll';
+  switch (reaction.key) {
+    case reactions.copy:   command = 'copy'; break;
+    case reactions.clap:   command = 'clap'; break;
+    case reactions.redact: command = 'redact'; break;
+    case reactions.rain:   command = 'makeitrain'; break;
+    case reactions.unroll: command = 'unroll'; break;
+    case reactions.expand:
+      command = 'expand';
+      args = [ reaction.event_id ];
+      break;
+    default:
+      if (isEmoji(reaction.key)) {
+        command = 'react';
+        args.push(reaction.key);
+      }
+      break;
+  };
   eventHandler(args, roomId, command, event);
 };
 
@@ -144,17 +169,30 @@ module.exports.handleReply = async (event) => {
 };
 
 module.exports.selfReact = async (event) => {
+  const reactions = config.matrix.reactions;
   if (event.getType() !== 'm.room.message') return;
   if (event.event.unsigned.age > 10000) return;
   if (!event.getContent().meta) return;
   const { meta } = event.getContent();
   const type = meta.split(' ')[0];
-  if (type === 'redact' || type === 'unreblog') addReact(event, '🗑️️');
+  if (type === 'redact' || type === 'unreblog')
+    addReact(event, reactions.redact);
+  if (type === 'status' || type === 'reblog' || type === 'mention')
+    addReact(event, reactions.expand);
+};
+
+module.exports.expandReact = async (event) => {
+  const reactions = config.matrix.reactions;
+  if (event.getSender() !== matrixClient.credentials.userId) return;
+  if (!event.getContent().meta) return;
+  const { meta } = event.getContent();
+  const type = meta.split(' ')[0];
   if (type === 'status' || type === 'reblog' || type === 'mention') {
-    addReact(event, '➕');
-    addReact(event, '🔁');
-    addReact(event, '👏');
-    if (config.fediverse.tipping === true) addReact(event, '🌧️');
+    addReact(event, reactions.unroll);
+    addReact(event, reactions.copy);
+    addReact(event, reactions.clap);
+    if (config.fediverse.tipping)
+      addReact(event, reactions.rain);
   }
 };
 

@@ -8,7 +8,7 @@ const sendEventWithMeta = async (roomId, content, meta) => {
   });
 };
 
-const thread = async (roomId, event, content, meta) => {
+const thread = async (roomId, eventId, content, meta) => {
   await matrixClient.sendEvent(roomId, 'm.room.message', {
     body: content.replace(/<[^<]+?>/g, ''),
     msgtype: 'm.notice',
@@ -17,7 +17,7 @@ const thread = async (roomId, event, content, meta) => {
     format: 'org.matrix.custom.html',
     'm.relates_to': {
       rel_type: 'm.thread',
-      event_id: event['event']['content']['m.relates_to']['event_id'],
+      event_id: eventId,
     },
   })
 };
@@ -78,6 +78,18 @@ const notifyFormatter = (res, roomId) => {
            </blockquote>`;
       sendEventWithMeta(roomId, content, meta);
       break;
+    case 'pleroma:emoji_reaction':
+        fediverse.auth.me !== res.account.url ? res.meta = 'react' : res.meta = 'redact';
+        meta = `${res.meta} ${res.status.id}`;
+        content = `${userDetails}
+         <font color="#03b381"><b>has <a href="${config.fediverse.domain}/notice/${res.status.id}">reacted</a> with
+         ${ res.emoji_url ? `<a href="${res.emoji_url}">${res.emoji}</a>` : `<span>${res.emoji}</span>` }
+         to your post:</font><blockquote><i>${res.status.content}</i><br>
+             ${hasAttachment(res)}
+             <br>(id: ${res.status.id}) ${registrar.post.visibilityEmoji(res.status.visibility)}
+             </blockquote>`;
+        sendEventWithMeta(roomId, content, meta);
+        break;
     default:
       return console.log('Unknown notification type.');
   }

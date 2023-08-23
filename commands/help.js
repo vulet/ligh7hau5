@@ -3,6 +3,8 @@ exports.runQuery = function (roomId) {
     ' ',
     '<blockquote><b>fediverse commands<br>'
           + '+post [your message] : post<br>'
+          + '+direct [@recipient] [message] : direct message<br>'
+          + '+private [message] : follower-only message<br>'
           + '+redact [post id] : delete post<br>'
           + '+follow [user id] : follow<br>'
           + '+unfollow [user id] : unfollow<br>'

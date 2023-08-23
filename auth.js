@@ -6,7 +6,6 @@ const matrixTokenLogin = async () => {
     accessToken: matrix.auth.access_token,
     userId: matrix.auth.user_id,
     deviceId: matrix.auth.device_id,
-    sessionStore: new sdk.WebStorageSessionStore(localStorage),
     cryptoStore: new LocalStorageCryptoStore(localStorage),
   });
   matrixClient.initCrypto()
@@ -26,7 +25,7 @@ const matrixTokenLogin = async () => {
 module.exports.matrixTokenLogin = matrixTokenLogin;
 
 module.exports.getMatrixToken = async () => {
-  matrixClient = sdk.createClient(config.matrix.domain);
+  matrixClient = sdk.createClient({ baseUrl: config.matrix.domain });
   matrixClient.loginWithPassword(config.matrix.user, config.matrix.password)
     .then((response) => {
       matrix.auth = {

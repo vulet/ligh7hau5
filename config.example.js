@@ -5,6 +5,14 @@ module.exports = {
     password: 'your_password',
     domains: [ 'your_homeserver.com' ],
     manualVerify: false,
+    reactions: {
+      copy: '🔁',
+      clap: '👏',
+      redact: '🗑️️',
+      rain: '🌧️',
+      unroll: '🔍️',
+      expand: '➕',
+    }
   },
   fediverse: {
     domain: 'https://your_federation.com',

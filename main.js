@@ -34,6 +34,7 @@ matrixClient.on('Room.timeline', async (event, member, toStartOfTimeline) => {
   if (event.event.unsigned.age > 10000) return;
   roomId = event.event.room_id;
   content = event.getContent().body;
+  if (!typeof content === 'string') return;
   if (content.charAt(0) === '+') {
     const args = content.slice(1).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
