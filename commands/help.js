@@ -10,6 +10,7 @@ exports.runQuery = function (roomId) {
           + '+unfollow [user id] : unfollow<br>'
           + '+media [homeserver image URL or MXC] [optional message] : post media<br>'
           + '+copy [post id] : repeat/repost/retweet<br>'
+          + '+crossblog [status URL]: cross blog twitter post to fediverse post<br>'
           + '+reply [post id] [content] : reply to post<br>'
           + '+tip [@user@fedi.url] [amount] : tip 10grans<br>'
           + '+makeitrain [post id] : make it rain 10grans<br>'
