@@ -33,8 +33,8 @@ module.exports = {
   nitter: {
     userAgent: 'Mozilla/4.0 (compatible; Beep Boop)',
     domains: {
-      redirect: [ 'nitter.fdn.fr', 'nitter.snopyta.org', 'nitter.net' ],
-      original:  [ 'nitter.net', 'www.nitter.net', 'twitter.com', 'www.twitter.com', 'mobile.twitter.com', 'm.twitter.com' ]
+      redirect: [ 'nitter.unixfox.eu', 'nitter.cz', 'nitter.privacydev.net', 'nitter.poast.org', 'nitter.fdn.fr', 'nitter.snopyta.org', 'nitter.net' ],
+      original:  [ 'nitter.unixfox.eu', 'nitter.cz', 'nitter.privacydev.net', 'nitter.poast.org', 'nitter.net', 'www.nitter.net', 'twitter.com', 'www.twitter.com', 'mobile.twitter.com', 'm.twitter.com' ]
     },
     check: '(✅)',
   },

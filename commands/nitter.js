@@ -63,19 +63,25 @@ const getInstance = (domain, config) =>
     timeout: 10 * 1000,
   });
 
-const run = async (roomId, userInput) => {
+const run = async (roomId, userInput, fedi) => {
   const cfg = config.nitter;
   const tweet = await matrix.utils.retryPromise(cfg.domains.redirect, domain => nitter(getInstance(domain, cfg), userInput));
-  return matrixClient.sendHtmlNotice(roomId, ' ', card(tweet, cfg.check, userInput));
+  const tweetCard = card(tweet, cfg.check, userInput);
+  return fedi ? axios({
+    method: 'POST',
+    url: `${config.fediverse.domain}/api/v1/statuses`,
+    headers: { Authorization: `Bearer ${fediverse.auth.access_token}` },
+    data: { status: tweetCard, content_type: 'text/html' }
+  }) : matrixClient.sendHtmlNotice(roomId, ' ', tweetCard);
 };
 
-exports.runQuery = async (roomId, event, userInput) => {
+exports.runQuery = async (roomId, event, userInput, fedi) => {
   try {
     const url = new URL(userInput);
     const { redirect, original } = config.nitter.domains;
     if (!redirect.includes(url.hostname) && !original.includes(url.hostname)) throw '';
     if (!/^\/[^/]+\/status\/\d+\/?$/.test(url.pathname)) throw '';
-    return await run(roomId, url.pathname);
+    return await run(roomId, url.pathname, fedi);
   } catch (e) {
     return matrixClient.sendHtmlNotice(roomId, 'Sad!', '<strong>Sad!</strong>').catch(() => {});
   }
